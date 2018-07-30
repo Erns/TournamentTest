@@ -18,6 +18,7 @@ namespace TournamentTest.Pages.Players
 		{
 			InitializeComponent();
             openPlayer = new Player();
+            deleteButton.IsVisible = false;
         }
 
         public Players_Add(int Id)
@@ -42,7 +43,7 @@ namespace TournamentTest.Pages.Players
 
         }
 
-        private void Button_Clicked(object sender, EventArgs e)
+        private void saveButton_Clicked(object sender, EventArgs e)
         {
             Player player = new Player()
             {
@@ -82,17 +83,32 @@ namespace TournamentTest.Pages.Players
                     numberOfRows = conn.Insert(player);
                     if (numberOfRows > 0)
                     {
-                        DisplayAlert("Success", "Player successfully inserted", "Great!");
+                        DisplayAlert("Success", "Player successfully created", "Great!");
                     }
                     else
                     {
-                        DisplayAlert("Failure", "Player failed to be inserted", "Oops!");
+                        DisplayAlert("Failure", "Player failed to be created", "Oops!");
                     }
                 }
 
 
                 Navigation.PopAsync();
             }
+        }
+
+        async void deleteButton_Clicked(object sender, EventArgs e)
+        {
+            var confirmed = await DisplayAlert("Confirm", "Do you want to delete this player?", "Yes", "No");
+            if (confirmed)
+            {
+                using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
+                {
+                    conn.CreateTable<Player>();
+                    conn.Delete(openPlayer);
+                }
+                await Navigation.PopAsync();
+            }
+
         }
     }
 }

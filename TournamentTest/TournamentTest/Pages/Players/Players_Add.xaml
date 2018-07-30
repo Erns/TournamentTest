@@ -22,8 +22,27 @@
                     HorizontalOptions="End" />
             </StackLayout>
 
-            <Button Text="Save"
-                    Clicked="Button_Clicked" />
+            <StackLayout Orientation="Horizontal"
+                         VerticalOptions="EndAndExpand">
+
+                <Button Text="Delete"
+                        BackgroundColor="Red"
+                        x:Name="deleteButton"
+                        VerticalOptions="End"
+                        Clicked="deleteButton_Clicked"/>
+
+                <Button Text="Save"
+                    BackgroundColor="LightGray"
+                    x:Name="saveButton"                      
+                    Clicked="saveButton_Clicked"
+                    VerticalOptions="End"
+                    HorizontalOptions="FillAndExpand" />
+
+            </StackLayout>
+
+
+
+
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
