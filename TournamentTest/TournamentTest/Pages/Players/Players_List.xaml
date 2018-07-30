@@ -7,8 +7,12 @@
         <ListView x:Name="playersListView">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextCell Text="{Binding Name}"
-                              Detail="{Binding Email}" />
+                    <TextCell   Text="{Binding Name}"
+                                Detail="{Binding Email}"
+                                x:Name="{Binding Id}"
+                                Tapped="OpenPlayer"
+                                CommandParameter="{Binding Id}"
+                                />
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

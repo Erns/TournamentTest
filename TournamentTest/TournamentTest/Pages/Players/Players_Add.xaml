@@ -3,13 +3,24 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TournamentTest.Pages.Players.Players_Add">
     <ContentPage.Content>
-        <StackLayout>
+        <StackLayout Padding="25, 10, 25, 10">
 
             <Entry x:Name="nameEntry"
                    Placeholder="Player Name" />
 
             <Entry x:Name="emailEntry"
                    Placeholder="Email Address" />
+
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Player Active"
+                       VerticalOptions="CenterAndExpand"
+                       HorizontalOptions="Start"/>
+
+                <Switch x:Name="activeSwitch"
+                    IsToggled="True"
+                    VerticalOptions="CenterAndExpand"
+                    HorizontalOptions="End" />
+            </StackLayout>
 
             <Button Text="Save"
                     Clicked="Button_Clicked" />

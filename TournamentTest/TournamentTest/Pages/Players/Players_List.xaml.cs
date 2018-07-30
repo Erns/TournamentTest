@@ -12,10 +12,13 @@ namespace TournamentTest.Pages.Players
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class Players_List : ContentPage
 	{
-		public Players_List (string strTitle)
+        private bool blnActive;
+
+		public Players_List (string strTitle, bool blnActive)
 		{
 			InitializeComponent ();
             Title = strTitle;
+            this.blnActive = blnActive;
 		}
 
         protected override void OnAppearing()
@@ -26,10 +29,15 @@ namespace TournamentTest.Pages.Players
             {
                 conn.CreateTable<Player>();
 
-                var players = conn.Table<Player>().ToList();
-                playersListView.ItemsSource = players;
-
+                var lstPlayers = conn.Query<Player>("SELECT * FROM Player WHERE Active = ?", blnActive);
+                playersListView.ItemsSource = lstPlayers;
             }
         }
+
+        public void OpenPlayer(TextCell sender, EventArgs e)
+        {
+            Navigation.PushAsync(new Pages.Players.Players_Add(Convert.ToInt32(sender.CommandParameter.ToString())));
+        }
+
     }
 }

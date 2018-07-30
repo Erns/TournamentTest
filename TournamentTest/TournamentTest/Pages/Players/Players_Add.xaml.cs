@@ -12,31 +12,86 @@ namespace TournamentTest.Pages.Players
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class Players_Add : ContentPage
 	{
+        private Player openPlayer;
+
 		public Players_Add ()
 		{
-			InitializeComponent ();         
-		}
+			InitializeComponent();
+            openPlayer = new Player();
+        }
+
+        public Players_Add(int Id)
+        {
+            InitializeComponent();
+            openPlayer = new Player();
+
+            using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
+            {
+                conn.CreateTable<Player>();
+                List<Player> player = conn.Query<Player>("SELECT * FROM Player WHERE Id = ?", Id);
+
+                if (player.Count > 0)
+                {
+                    openPlayer = player[0];
+
+                    nameEntry.Text = openPlayer.Name;
+                    emailEntry.Text = openPlayer.Email;
+                    activeSwitch.IsToggled = openPlayer.Active;
+                }
+            }
+
+        }
 
         private void Button_Clicked(object sender, EventArgs e)
         {
             Player player = new Player()
             {
                 Name = nameEntry.Text,
-                Email = emailEntry.Text
+                Email = emailEntry.Text,
+                Active = activeSwitch.IsToggled
             };
+
+            player.Id = openPlayer.Id;
+
+            if (player.Name == null || player.Name.ToString().Trim() == "")
+            {
+                DisplayAlert("Warning!", "Please enter a player name!", "OK");
+                return;
+            }
 
             using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
             {
                 conn.CreateTable<Player>();
-                var numberOfRows = conn.Insert(player);
-                if (numberOfRows > 0)
+
+                int numberOfRows = 0;
+
+                if (player.Id > 0)
                 {
-                    DisplayAlert("Success", "Player successfully inserted", "Great!");
+                    numberOfRows = conn.Update(player);
+                    if (numberOfRows > 0)
+                    {
+                        DisplayAlert("Success", "Player successfully updated", "Great!");
+                    }
+                    else
+                    {
+                        DisplayAlert("Failure", "Player failed to be updated", "Oops!");
+                    }
                 }
                 else
                 {
-                    DisplayAlert("Failure", "Player failed to be inserted", "Oops!");
+                    numberOfRows = conn.Insert(player);
+                    if (numberOfRows > 0)
+                    {
+                        DisplayAlert("Success", "Player successfully inserted", "Great!");
+                    }
+                    else
+                    {
+                        DisplayAlert("Failure", "Player failed to be inserted", "Oops!");
+                    }
                 }
+
+
+                Navigation.PopAsync();
             }
         }
     }
