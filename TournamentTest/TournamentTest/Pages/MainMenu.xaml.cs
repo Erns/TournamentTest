@@ -24,7 +24,8 @@ namespace TournamentTest.Pages
             {
                 //new MainMenuItem() { Title = "Page One", Icon = "menu_inbox.png", TargetType = typeof(PageOne) },
                 //new MainMenuItem() { Title = "Page Two", Icon = "menu_stock.png", TargetType = typeof(PageTwo) },
-                new MainMenuItem() { Title = "Players", Icon = "menu_inbox.png", TargetType = typeof(Players_Main) }
+                new MainMenuItem() { Title = "Players", Icon = "menu_inbox.png", TargetType = typeof(Players_Main) },
+                new MainMenuItem() { Title = "Tournaments", Icon = "menu_stock.png", TargetType = typeof(Tournaments_Main) }
             };
 
             // Set the default page, this is the "home" page.
@@ -41,18 +42,21 @@ namespace TournamentTest.Pages
             {
                 switch (item.Title.ToString())
                 {
-                    case "Page One":
-                        Detail = new NavigationPage(new PageOne());
-                        break;
+                    //case "Page One":
+                    //    Detail = new NavigationPage(new PageOne());
+                    //    break;
 
-                    case "Page Two":
-                        Detail = new NavigationPage(new PageTwo());
-                        break;
+                    //case "Page Two":
+                    //    Detail = new NavigationPage(new PageTwo());
+                    //    break;
 
                     case "Players":
                         Detail = new NavigationPage(new Players_Main());
                         break;
 
+                    case "Tournaments":
+                        Detail = new NavigationPage(new Tournaments_Main());
+                        break;
                 }
 
                 MenuListView.SelectedItem = null;

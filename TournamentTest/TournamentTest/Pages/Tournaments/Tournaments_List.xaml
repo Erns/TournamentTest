@@ -1,28 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="TournamentTest.Pages.Players.Players_List">
+             x:Class="TournamentTest.Pages.Tournaments.Tournaments_List">
     <ContentPage.Content>
-
-        <ListView x:Name="playersListView">
+        
+        <ListView x:Name="tournamentListView">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <TextCell   Text="{Binding Name}"
-                                Detail="{Binding Email}"
+                                Detail="{Binding StartDate, StringFormat='{0:MMMM dd, yyyy}'}"
                                 x:Name="{Binding Id}"
-                                Tapped="OpenPlayer"
                                 CommandParameter="{Binding Id}"
                                 />
                 </DataTemplate>
             </ListView.ItemTemplate>
-
-
         </ListView>
-
+        
     </ContentPage.Content>
-
-    <!--<StackLayout x:Name="searchBtn" Grid.Row="0" Grid.Column="0" WidthRequest="80" HeightRequest="80" BackgroundColor="Transparent" VerticalOptions="EndAndExpand" HorizontalOptions="EndAndExpand">
-        <Button HeightRequest="80" Image="searchImg" BackgroundColor="Transparent" WidthRequest="80" />
-    </StackLayout>-->
-    <!--</grid>?-->
 </ContentPage>

@@ -24,6 +24,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Pages\Players\Players_AddEdit.xaml.cs">
+      <DependentUpon>Players_AddEdit.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Pages\Players_Main.xaml.cs">
       <DependentUpon>Players_Main.xaml</DependentUpon>
     </Compile>
@@ -42,10 +45,19 @@
     <EmbeddedResource Update="Pages\Players_Main.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Pages\Players\Players_Add.xaml">
+    <EmbeddedResource Update="Pages\Players\Players_AddEdit.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Pages\Players\Players_List.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Pages\Tournaments\Tournaments_AddEdit.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Pages\Tournaments\Tournaments_List.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Pages\Tournaments_Main.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

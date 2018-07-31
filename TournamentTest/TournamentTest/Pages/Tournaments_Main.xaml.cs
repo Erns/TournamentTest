@@ -3,30 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TournamentTest.Classes;
+
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace TournamentTest.Pages
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class Players_Main : TabbedPage
+	public partial class Tournaments_Main : TabbedPage
 	{
-		public Players_Main ()
+		public Tournaments_Main ()
 		{
 			InitializeComponent ();
 
             this.Children.Clear();
-            Children.Add(new Pages.Players.Players_List("Active", true));
-            Children.Add(new Pages.Players.Players_List("Inactive", false));
+            Children.Add(new Pages.Tournaments.Tournaments_List("Current / Upcoming", true));
+            Children.Add(new Pages.Tournaments.Tournaments_List("Past", false));
         }
-
-       
 
         private void ToolbarItem_Activated(object sender, EventArgs e)
         {
-            Navigation.PushAsync(new Pages.Players.Players_AddEdit());
+            Navigation.PushAsync(new Pages.Tournaments.Tournaments_AddEdit());
         }
-
     }
 }

@@ -10,18 +10,18 @@ using Xamarin.Forms.Xaml;
 namespace TournamentTest.Pages.Players
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class Players_Add : ContentPage
+	public partial class Players_AddEdit : ContentPage
 	{
         private Player openPlayer;
 
-		public Players_Add ()
+		public Players_AddEdit ()
 		{
 			InitializeComponent();
             openPlayer = new Player();
             deleteButton.IsVisible = false;
         }
 
-        public Players_Add(int Id)
+        public Players_AddEdit(int Id)
         {
             InitializeComponent();
             openPlayer = new Player();
@@ -104,7 +104,8 @@ namespace TournamentTest.Pages.Players
                 using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
                 {
                     conn.CreateTable<Player>();
-                    conn.Delete(openPlayer);
+                    openPlayer.DateDeleted = DateTime.Now;
+                    conn.Update(openPlayer);
                 }
                 await Navigation.PopAsync();
             }
