@@ -33,24 +33,16 @@ namespace TournamentTest.Pages.Players
                 var lstPlayers = conn.Query<Player>("SELECT * FROM Player WHERE Active = ? AND DateDeleted IS NULL", blnActive);
                 playersListView.ItemsSource = lstPlayers;
             }
-
-            //var layout = new RelativeLayout();
-
-            //var normalFab = new FAB.Forms.FloatingActionButton();
-            //normalFab.Source = "ic_add_white_24dp.png";
-            //normalFab.Size = FabSize.Normal;
-
-            //layout.Children.Add(
-            //    normalFab,
-            //    xConstraint: Constraint.RelativeToParent((parent) => { return (parent.Width - normalFab.Width) - 16; }),
-            //    yConstraint: Constraint.RelativeToParent((parent) => { return (parent.Height - normalFab.Height) - 16; })
-            //);
-
         }
 
         public void OpenPlayer(TextCell sender, EventArgs e)
         {
             Navigation.PushAsync(new Players_AddEdit(Convert.ToInt32(sender.CommandParameter.ToString())));
+        }
+
+        void Handle_FabClicked(object sender, System.EventArgs e)
+        {
+            this.DisplayAlert("Floating Action Button", "You clicked the FAB!", "Awesome!");
         }
 
     }

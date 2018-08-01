@@ -1,8 +1,55 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Application xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:TournamentTest.Classes"
              x:Class="TournamentTest.App">
 	<Application.Resources>
-    
+        <ResourceDictionary>
+            <Style x:Key="testBtnStyle" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="ForestGreen"/>
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="FontSize" Value="Large"/>
+                <Setter Property="HeightRequest" Value="60"/>
+                <Setter Property="WidthRequest" Value="60"/>
+                <Setter Property="BorderRadius" Value="30"/>
+                <Setter Property="VerticalOptions" Value="End"/>
+                <Setter Property="HorizontalOptions" Value="End"/>
+                <!--<Button.Effects>
+                    <local:ShadowEffect Radius="5" DistanceX="5" DistanceY="5">
+                        <local:ShadowEffect.Color>
+                            <OnPlatform x:TypeArguments="Color">
+                                <On Platform="iOS" Value="Black" />
+                                <On Platform="Android" Value="Black" />
+                                <On Platform="UWP" Value="Red" />
+                            </OnPlatform>
+                        </local:ShadowEffect.Color>
+                    </local:ShadowEffect>
+                </Button.Effects>-->
+                
+            </Style>
+            
+            <ControlTemplate x:Key="FAB_Default">
+                <Button BackgroundColor="ForestGreen"
+                    TextColor="White" 
+                    FontSize="Large"
+                    HeightRequest="60" 
+                    WidthRequest="60" 
+                    BorderRadius="30" 
+                    VerticalOptions="End" 
+                    HorizontalOptions="End">
+                    <Button.Effects>
+                        <local:ShadowEffect Radius="5" DistanceX="5" DistanceY="5">
+                            <local:ShadowEffect.Color>
+                                <OnPlatform x:TypeArguments="Color">
+                                    <On Platform="iOS" Value="Black" />
+                                    <On Platform="Android" Value="Black" />
+                                    <On Platform="UWP" Value="Red" />
+                                </OnPlatform>
+                            </local:ShadowEffect.Color>
+                        </local:ShadowEffect>
+                    </Button.Effects>
+                </Button>
+            </ControlTemplate>
+        </ResourceDictionary>
 	</Application.Resources>
 </Application>
