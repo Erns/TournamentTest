@@ -17,8 +17,8 @@ namespace TournamentTest.Pages
 			InitializeComponent ();
 
             this.Children.Clear();
-            Children.Add(new Pages.Players.Players_List("Active", true));
-            Children.Add(new Pages.Players.Players_List("Inactive", false));
+            Children.Add(new Players.Players_List("Active", true));
+            Children.Add(new Players.Players_List("Inactive", false));
         }
     }
 }

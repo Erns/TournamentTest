@@ -19,7 +19,7 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-            <Button Text="+" Style="{StaticResource fabBtnStyle}" Clicked="Handle_FabClicked">
+            <Button Style="{StaticResource fabBtnStyle}" Clicked="Handle_FabClicked">
                 <Button.Effects>
                     <local:ShadowEffect Radius="5" DistanceX="5" DistanceY="5">
                         <local:ShadowEffect.Color>

@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:local="clr-namespace:TournamentTest.Classes"
+            x:Class="TournamentTest.Pages.Tournaments.Tournaments_AllInfo">
+
+
+    
+    
+    <ContentPage Title="Active" >
+        <ContentPage.Content>
+            <Grid Padding="10">
+
+
+                <!--<ContentView x:Name="popupListView" BackgroundColor="#C0808080" Padding="10, 0" IsVisible="false" AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
+                    <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
+                        <StackLayout Orientation="Vertical" HeightRequest="200" WidthRequest="300" BackgroundColor="White">
+                            <ListView x:Name="sampleList">
+                            </ListView>
+                        </StackLayout>
+                    </StackLayout>
+                </ContentView>-->
+
+
+                
+                <ListView x:Name="activePlayersListView">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextCell   Text="{Binding Name}"
+                                Detail="{Binding Email}"
+                                x:Name="{Binding Id}"
+                                CommandParameter="{Binding Id}"
+                                Tapped="addPlayers"
+                                        
+                                />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+
+                <Button Style="{StaticResource fabBtnStyle}" Clicked="addPlayers">
+                    <Button.Effects>
+                        <local:ShadowEffect Radius="5" DistanceX="5" DistanceY="5">
+                            <local:ShadowEffect.Color>
+                                <OnPlatform x:TypeArguments="Color">
+                                    <On Platform="iOS" Value="Black" />
+                                    <On Platform="Android" Value="Black" />
+                                    <On Platform="UWP" Value="Black" />
+                                </OnPlatform>
+                            </local:ShadowEffect.Color>
+                        </local:ShadowEffect>
+                    </Button.Effects>
+                </Button>
+
+
+
+                <ContentView x:Name="addPlayersPopup" Margin="-10" BackgroundColor="#C0808080" Padding="10, 0" IsVisible="false" AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
+                    <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
+                        <StackLayout Orientation="Vertical" HeightRequest="150" WidthRequest="200" BackgroundColor="White">
+
+                            <ListView x:Name="playersListView">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <SwitchCell   Text="{Binding Name}"
+                                                        OnChanged="SwitchCell_OnChanged"
+                                                        x:Name="{Binding Id}"
+                                                      
+                                                      />
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+
+                            <Button Text="OK" Clicked="Button_Clicked"/>
+
+                        </StackLayout>
+                    </StackLayout>
+                </ContentView>
+
+            </Grid>
+        </ContentPage.Content>
+
+   
+    </ContentPage>
+    
+    
+    
+    <ContentPage Title="Dropped">
+        <Grid Padding="10">
+            <ListView x:Name="droppedPlayersListView">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextCell   Text="{Binding Name}"
+                                Detail="{Binding Email}"
+                                x:Name="{Binding Id}"
+                                CommandParameter="{Binding Id}"
+                                />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+    </ContentPage>
+</TabbedPage>

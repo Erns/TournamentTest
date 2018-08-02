@@ -6,7 +6,7 @@
 	<Application.Resources>
         <ResourceDictionary>
             <Style x:Key="fabBtnStyle" TargetType="Button">
-                
+                <Setter Property="Text" Value="+"/>
                 <Setter Property="BackgroundColor" Value="ForestGreen"/>
                 <Setter Property="TextColor" Value="White"/>
                 <Setter Property="FontSize" Value="Large"/>

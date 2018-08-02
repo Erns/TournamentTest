@@ -43,5 +43,10 @@ namespace TournamentTest.Pages.Tournaments
             Navigation.PushAsync(new Tournaments_AddEdit());
         }
 
+        void openTournament(TextCell sender, System.EventArgs e)
+        {
+            Navigation.PushAsync(new Tournaments_AllInfo(sender.Text, Convert.ToInt32(sender.CommandParameter.ToString())));
+        }
+
     }
 }

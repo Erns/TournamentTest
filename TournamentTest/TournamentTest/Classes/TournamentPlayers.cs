@@ -11,5 +11,6 @@ namespace TournamentTest.Classes
         public int Id { get; set; }
         public int TournmentId { get; set; }
         public int PlayerId { get; set; }
+        public bool Active { get; set; }
     }
 }
