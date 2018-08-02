@@ -1,13 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="TournamentTest.Pages.Players_Main"
+            xmlns:local="clr-namespace:TournamentTest.Classes"
+            x:Class="TournamentTest.Pages.Players_Main"
              Title="Players">
 
-    <TabbedPage.ToolbarItems>
+    <!--<TabbedPage.ToolbarItems>
         <ToolbarItem Text="+"
                      Activated="ToolbarItem_Activated"/>
        
-    </TabbedPage.ToolbarItems>
-
+    </TabbedPage.ToolbarItems>-->
+    
 </TabbedPage>

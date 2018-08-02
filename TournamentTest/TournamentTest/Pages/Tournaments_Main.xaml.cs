@@ -20,10 +20,5 @@ namespace TournamentTest.Pages
             Children.Add(new Pages.Tournaments.Tournaments_List("Current / Upcoming", true));
             Children.Add(new Pages.Tournaments.Tournaments_List("Past", false));
         }
-
-        private void ToolbarItem_Activated(object sender, EventArgs e)
-        {
-            Navigation.PushAsync(new Pages.Tournaments.Tournaments_AddEdit());
-        }
     }
 }

@@ -42,7 +42,7 @@ namespace TournamentTest.Pages.Players
 
         void Handle_FabClicked(object sender, System.EventArgs e)
         {
-            this.DisplayAlert("Floating Action Button", "You clicked the FAB!", "Awesome!");
+            Navigation.PushAsync(new Players_AddEdit(blnActive));
         }
 
     }

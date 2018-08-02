@@ -1,20 +1,37 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:TournamentTest.Classes"
              x:Class="TournamentTest.Pages.Tournaments.Tournaments_List">
     <ContentPage.Content>
-        
-        <ListView x:Name="tournamentListView">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <TextCell   Text="{Binding Name}"
-                                Detail="{Binding StartDate, StringFormat='{0:MMMM dd, yyyy}'}"
-                                x:Name="{Binding Id}"
-                                CommandParameter="{Binding Id}"
-                                />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-        
+        <Grid Padding="10">
+            
+            <ListView x:Name="tournamentListView">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextCell   Text="{Binding Name}"
+                                    Detail="{Binding StartDate, StringFormat='{0:MMMM dd, yyyy}'}"
+                                    x:Name="{Binding Id}"
+                                    CommandParameter="{Binding Id}"
+                                    />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <Button Text="+" Style="{StaticResource fabBtnStyle}" Clicked="Handle_FabClicked">
+                <Button.Effects>
+                    <local:ShadowEffect Radius="5" DistanceX="5" DistanceY="5">
+                        <local:ShadowEffect.Color>
+                            <OnPlatform x:TypeArguments="Color">
+                                <On Platform="iOS" Value="Black" />
+                                <On Platform="Android" Value="Black" />
+                                <On Platform="UWP" Value="Black" />
+                            </OnPlatform>
+                        </local:ShadowEffect.Color>
+                    </local:ShadowEffect>
+                </Button.Effects>
+            </Button>
+            
+        </Grid>
     </ContentPage.Content>
 </ContentPage>

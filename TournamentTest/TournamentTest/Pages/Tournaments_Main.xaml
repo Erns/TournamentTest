@@ -4,10 +4,10 @@
              x:Class="TournamentTest.Pages.Tournaments_Main"
             Title="Tournaments">
 
-    <TabbedPage.ToolbarItems>
+    <!--<TabbedPage.ToolbarItems>
         <ToolbarItem Text="+"
                      Activated="ToolbarItem_Activated" />
         
-    </TabbedPage.ToolbarItems>
+    </TabbedPage.ToolbarItems>-->
 
 </TabbedPage>

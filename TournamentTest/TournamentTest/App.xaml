@@ -5,7 +5,8 @@
              x:Class="TournamentTest.App">
 	<Application.Resources>
         <ResourceDictionary>
-            <Style x:Key="testBtnStyle" TargetType="Button">
+            <Style x:Key="fabBtnStyle" TargetType="Button">
+                
                 <Setter Property="BackgroundColor" Value="ForestGreen"/>
                 <Setter Property="TextColor" Value="White"/>
                 <Setter Property="FontSize" Value="Large"/>
@@ -14,21 +15,10 @@
                 <Setter Property="BorderRadius" Value="30"/>
                 <Setter Property="VerticalOptions" Value="End"/>
                 <Setter Property="HorizontalOptions" Value="End"/>
-                <!--<Button.Effects>
-                    <local:ShadowEffect Radius="5" DistanceX="5" DistanceY="5">
-                        <local:ShadowEffect.Color>
-                            <OnPlatform x:TypeArguments="Color">
-                                <On Platform="iOS" Value="Black" />
-                                <On Platform="Android" Value="Black" />
-                                <On Platform="UWP" Value="Red" />
-                            </OnPlatform>
-                        </local:ShadowEffect.Color>
-                    </local:ShadowEffect>
-                </Button.Effects>-->
-                
             </Style>
+
             
-            <ControlTemplate x:Key="FAB_Default">
+            <!--<ControlTemplate x:Key="FAB_Default">
                 <Button BackgroundColor="ForestGreen"
                     TextColor="White" 
                     FontSize="Large"
@@ -49,7 +39,7 @@
                         </local:ShadowEffect>
                     </Button.Effects>
                 </Button>
-            </ControlTemplate>
+            </ControlTemplate>-->
         </ResourceDictionary>
 	</Application.Resources>
 </Application>

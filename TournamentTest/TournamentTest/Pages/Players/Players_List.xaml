@@ -19,14 +19,14 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-            <Button Text="X" Style="{StaticResource testBtnStyle}">
+            <Button Text="+" Style="{StaticResource fabBtnStyle}" Clicked="Handle_FabClicked">
                 <Button.Effects>
                     <local:ShadowEffect Radius="5" DistanceX="5" DistanceY="5">
                         <local:ShadowEffect.Color>
                             <OnPlatform x:TypeArguments="Color">
                                 <On Platform="iOS" Value="Black" />
                                 <On Platform="Android" Value="Black" />
-                                <On Platform="UWP" Value="Red" />
+                                <On Platform="UWP" Value="Black" />
                             </OnPlatform>
                         </local:ShadowEffect.Color>
                     </local:ShadowEffect>
@@ -69,6 +69,4 @@
         
     </ContentPage.Content>
 
-
-    <!--</grid>?-->
 </ContentPage>

@@ -14,13 +14,16 @@ namespace TournamentTest.Pages.Players
 	{
         private Player openPlayer;
 
-		public Players_AddEdit ()
+        //Starting a new player
+		public Players_AddEdit (bool blnActive = true)
 		{
 			InitializeComponent();
             openPlayer = new Player();
+            activeSwitch.IsToggled = blnActive;
             deleteButton.IsVisible = false;
         }
 
+        //Opening an existing player
         public Players_AddEdit(int Id)
         {
             InitializeComponent();
@@ -43,6 +46,7 @@ namespace TournamentTest.Pages.Players
 
         }
 
+        //Save
         private void saveButton_Clicked(object sender, EventArgs e)
         {
             Player player = new Player()
@@ -69,33 +73,22 @@ namespace TournamentTest.Pages.Players
                 if (player.Id > 0)
                 {
                     numberOfRows = conn.Update(player);
-                    if (numberOfRows > 0)
-                    {
-                        DisplayAlert("Success", "Player successfully updated", "Great!");
-                    }
-                    else
-                    {
-                        DisplayAlert("Failure", "Player failed to be updated", "Oops!");
-                    }
+                    if (numberOfRows > 0) DisplayAlert("Success", "Player successfully updated", "Great!");
+                    else DisplayAlert("Failure", "Player failed to be updated", "Oops!");
                 }
                 else
                 {
                     numberOfRows = conn.Insert(player);
-                    if (numberOfRows > 0)
-                    {
-                        DisplayAlert("Success", "Player successfully created", "Great!");
-                    }
-                    else
-                    {
-                        DisplayAlert("Failure", "Player failed to be created", "Oops!");
-                    }
-                }
+                    if (numberOfRows > 0) DisplayAlert("Success", "Player successfully created", "Great!");
+                    else DisplayAlert("Failure", "Player failed to be created", "Oops!");
 
+                }
 
                 Navigation.PopAsync();
             }
         }
 
+        //Delete
         async void deleteButton_Clicked(object sender, EventArgs e)
         {
             var confirmed = await DisplayAlert("Confirm", "Do you want to delete this player?", "Yes", "No");

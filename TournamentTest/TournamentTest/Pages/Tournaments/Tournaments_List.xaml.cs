@@ -30,18 +30,17 @@ namespace TournamentTest.Pages.Tournaments
 
                 List<TournamentMain> lstTournaments = new List<TournamentMain>();
 
-                if (blnActive)
-                {
-                    lstTournaments = conn.Query<TournamentMain>("SELECT * FROM TournamentMain WHERE StartDate >= ?", DateTime.Today);
-                }
-                else
-                {
-                    lstTournaments = conn.Query<TournamentMain>("SELECT * FROM TournamentMain WHERE StartDate < ?", DateTime.Today);
-                }
+                if (blnActive) lstTournaments = conn.Query<TournamentMain>("SELECT * FROM TournamentMain WHERE StartDate >= ?", DateTime.Today);
+                else lstTournaments = conn.Query<TournamentMain>("SELECT * FROM TournamentMain WHERE StartDate < ?", DateTime.Today);
 
                 tournamentListView.ItemsSource = lstTournaments;
             }
 
+        }
+
+        void Handle_FabClicked(object sender, System.EventArgs e)
+        {
+            Navigation.PushAsync(new Tournaments_AddEdit());
         }
 
     }

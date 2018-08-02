@@ -20,13 +20,5 @@ namespace TournamentTest.Pages
             Children.Add(new Pages.Players.Players_List("Active", true));
             Children.Add(new Pages.Players.Players_List("Inactive", false));
         }
-
-       
-
-        private void ToolbarItem_Activated(object sender, EventArgs e)
-        {
-            Navigation.PushAsync(new Pages.Players.Players_AddEdit());
-        }
-
     }
 }
