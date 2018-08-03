@@ -1,4 +1,5 @@
 ﻿using SQLite;
+using SQLiteNetExtensions.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,30 +14,94 @@ namespace TournamentTest.Classes
         public string Name { get; set; }
         public DateTime StartDate { get; set; }
 
-        //public List<Player> Players { get; set; }
-        //public List<Round> Rounds { get; set; }
+        [OneToMany(CascadeOperations = CascadeOperation.All)]
+        public List<TournamentMainPlayer> Players { get; set; } = new List<TournamentMainPlayer>();
 
-        //public class Round
-        //{
-        //    public int Number { get; set; }
-        //    public List<Player> Players { get; set; }
-        //    public List<Table> Tables { get; set; }
-        //    public List<Result> Results { get; set; }
+        [OneToMany(CascadeOperations = CascadeOperation.All)]
+        public List<TournamentMainRound> Rounds { get; set; } = new List<TournamentMainRound>();
 
-        //    public class Table
-        //    {
-        //        public int Number { get; set; }
-        //        public int Player1Id { get; set; }
-        //        public int Player2Id { get; set; }
-        //    }
+        public string PlayersList()
+        {
+            List<string> lstIDs = new List<string>();
+            foreach (TournamentMainPlayer item in Players)
+            {
+                lstIDs.Add(item.PlayerId.ToString());
+            }
 
-        //    public class Result
-        //    {
-        //        public int PlayerId { get; set; }
-        //        public int OpponentPlayerId { get; set; }
-        //        public int Score { get; set; }
-        //        public bool Win { get; set; }
-        //    }
-        //}
+            return String.Join(",", lstIDs.ToArray());
+        }
     }
+
+    public class TournamentMainPlayer
+    {
+        [PrimaryKey, AutoIncrement]
+        public int Id { get; set; }
+
+        [ForeignKey(typeof(TournamentMain))]
+        public int TournmentId { get; set; }
+
+        [ForeignKey(typeof(Player))]
+        public int PlayerId { get; set; }
+
+        public bool Active { get; set; } = true;
+    }
+
+    public class TournamentMainRound
+    {
+        [PrimaryKey, AutoIncrement]
+        public int Id { get; set; }
+
+        [ForeignKey(typeof(TournamentMain))]
+        public int TournmentId { get; set; }
+
+        public int Number { get; set; }
+
+        [OneToMany(CascadeOperations = CascadeOperation.All)]
+        public List<TournamentMainPlayer> Players { get; set; } = new List<TournamentMainPlayer>();
+
+        [OneToMany(CascadeOperations = CascadeOperation.All)]
+        public List<TournamentMainRoundTable> Tables { get; set; } = new List<TournamentMainRoundTable>();
+
+        [OneToMany(CascadeOperations = CascadeOperation.All)]
+        public List<TournamentMainRoundTableResult> Results { get; set; } = new List<TournamentMainRoundTableResult>();
+
+    }
+
+    public class TournamentMainRoundTable
+    {
+        [PrimaryKey, AutoIncrement]
+        public int Id { get; set; }
+
+        [ForeignKey(typeof(TournamentMainRound))]
+        public int RoundId { get; set; }
+
+        public int Number { get; set; }
+
+        [ForeignKey(typeof(Player))]
+        public int Player1Id { get; set; }
+
+        [ForeignKey(typeof(Player))]
+        public int Player2Id { get; set; }
+    }
+
+    public class TournamentMainRoundTableResult
+    {
+        [PrimaryKey, AutoIncrement]
+        public int Id { get; set; }
+
+        [ForeignKey(typeof(TournamentMainRound))]
+        public int RoundId { get; set; }
+
+        [ForeignKey(typeof(Player))]
+        public int PlayerId { get; set; }
+
+        [ForeignKey(typeof(Player))]
+        public int OpponentPlayerId { get; set; }
+
+        public int Score { get; set; }
+        public bool Win { get; set; }
+    }
+
+
+
 }

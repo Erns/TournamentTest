@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SQLiteNetExtensions.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,8 +22,27 @@ namespace TournamentTest.Pages.Tournaments
             openTournament = new TournamentMain();
 		}
 
+
+        public Tournaments_AddEdit(int intTournID)
+        {
+            InitializeComponent();
+            openTournament = new TournamentMain();
+
+            using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
+            {
+                Utilities.CreateTournamentMain(conn);
+                conn.CreateTable<Player>();
+
+                openTournament = conn.GetWithChildren<TournamentMain>(intTournID);
+
+                nameEntry.Text = openTournament.Name;
+                dateEntry.Date = openTournament.StartDate;
+            }
+        }
+
         private void saveButton_Clicked(object sender, EventArgs e)
         {
+
             TournamentMain tournament = new TournamentMain()
             {
                 Name = nameEntry.Text,
@@ -50,19 +70,30 @@ namespace TournamentTest.Pages.Tournaments
             //Update database
             using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
             {
-                conn.CreateTable<TournamentMain>();
 
-                int numberOfRows = 0;
+                Utilities.CreateTournamentMain(conn);
 
                 //Create
-                numberOfRows = conn.Insert(tournament);
-                if (numberOfRows > 0)
+                try
                 {
-                    DisplayAlert("Success", "Tournament successfully created", "OK");
+                    
+                    if (openTournament.Id == 0)
+                    {
+                        conn.InsertWithChildren(tournament);
+                        DisplayAlert("Success", "Tournament successfully created", "OK");
+
+                    }
+                    else
+                    {
+                        conn.UpdateWithChildren(tournament);
+                        DisplayAlert("Success", "Tournament successfully updated", "OK");
+
+                    }
                 }
-                else
+                catch
                 {
                     DisplayAlert("Failure", "An error occurred when creating this tournament", "OK");
+
                 }
 
                 Navigation.PopAsync();

@@ -32,16 +32,13 @@ namespace TournamentTest.Pages.Players
             using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
             {
                 conn.CreateTable<Player>();
-                List<Player> player = conn.Query<Player>("SELECT * FROM Player WHERE Id = ?", Id);
+                //List<Player> player = conn.Query<Player>("SELECT * FROM Player WHERE Id = ?", Id);
 
-                if (player.Count > 0)
-                {
-                    openPlayer = player[0];
+                openPlayer = conn.Get<Player>(Id);
 
-                    nameEntry.Text = openPlayer.Name;
-                    emailEntry.Text = openPlayer.Email;
-                    activeSwitch.IsToggled = openPlayer.Active;
-                }
+                nameEntry.Text = openPlayer.Name;
+                emailEntry.Text = openPlayer.Email;
+                activeSwitch.IsToggled = openPlayer.Active;
             }
 
         }

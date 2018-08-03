@@ -4,40 +4,36 @@
             xmlns:local="clr-namespace:TournamentTest.Classes"
             x:Class="TournamentTest.Pages.Tournaments.Tournaments_AllInfo">
 
+    <TabbedPage.ToolbarItems>
 
-    
-    
-    <ContentPage Title="Active" >
+        <ToolbarItem Text="Edit Tournament"
+                     Order="Secondary"
+                     x:Name="editTournmentBtn"
+                     Activated="editTournmentBtn_Activated" />
+
+        <ToolbarItem Text="Start Next Round"
+                     Order="Secondary"
+                     Activated="startRoundBtn_ToolbarItem_Activated"
+                     x:Name="startRoundBtn">
+            
+        </ToolbarItem>
+    </TabbedPage.ToolbarItems> 
+
+    <ContentPage Title="Players" >
         <ContentPage.Content>
             <Grid Padding="10">
 
-
-                <!--<ContentView x:Name="popupListView" BackgroundColor="#C0808080" Padding="10, 0" IsVisible="false" AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
-                    <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
-                        <StackLayout Orientation="Vertical" HeightRequest="200" WidthRequest="300" BackgroundColor="White">
-                            <ListView x:Name="sampleList">
-                            </ListView>
-                        </StackLayout>
-                    </StackLayout>
-                </ContentView>-->
-
-
-                
                 <ListView x:Name="activePlayersListView">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <TextCell   Text="{Binding Name}"
-                                Detail="{Binding Email}"
-                                x:Name="{Binding Id}"
-                                CommandParameter="{Binding Id}"
-                                Tapped="addPlayers"
-                                        
+                                Detail="{Binding Active}"
                                 />
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
 
-
+                <!--FAB-->
                 <Button Style="{StaticResource fabBtnStyle}" Clicked="addPlayers">
                     <Button.Effects>
                         <local:ShadowEffect Radius="5" DistanceX="5" DistanceY="5">
@@ -52,28 +48,26 @@
                     </Button.Effects>
                 </Button>
 
-
-
+                
+                <!--Add Players Popup-->
                 <ContentView x:Name="addPlayersPopup" Margin="-10" BackgroundColor="#C0808080" Padding="10, 0" IsVisible="false" AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
-                    <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
-                        <StackLayout Orientation="Vertical" HeightRequest="150" WidthRequest="200" BackgroundColor="White">
+                    <Grid>
+                        <StackLayout Padding="10" Orientation="Vertical" BackgroundColor="White" VerticalOptions="Center" HorizontalOptions="Center">
 
-                            <ListView x:Name="playersListView">
+                            <ListView x:Name="playersListView" >
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <SwitchCell   Text="{Binding Name}"
-                                                        OnChanged="SwitchCell_OnChanged"
-                                                        x:Name="{Binding Id}"
-                                                      
+                                        <SwitchCell Text="{Binding Name}"
+                                                    OnChanged="SwitchCell_OnChanged"                                                                                                        
+                                                    ClassId="{Binding Id}"
                                                       />
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
 
-                            <Button Text="OK" Clicked="Button_Clicked"/>
-
+                            <Button Text="OK" Clicked="addPlayers_Button_Clicked"/>
                         </StackLayout>
-                    </StackLayout>
+                    </Grid>
                 </ContentView>
 
             </Grid>
@@ -84,7 +78,7 @@
     
     
     
-    <ContentPage Title="Dropped">
+    <!--<ContentPage Title="Dropped">
         <Grid Padding="10">
             <ListView x:Name="droppedPlayersListView">
                 <ListView.ItemTemplate>
@@ -98,5 +92,5 @@
                 </ListView.ItemTemplate>
             </ListView>
         </Grid>
-    </ContentPage>
+    </ContentPage>-->
 </TabbedPage>
