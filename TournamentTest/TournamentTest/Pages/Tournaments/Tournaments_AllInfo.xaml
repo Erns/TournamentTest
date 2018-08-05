@@ -60,6 +60,7 @@
                                         <SwitchCell Text="{Binding Name}"
                                                     OnChanged="SwitchCell_OnChanged"                                                                                                        
                                                     ClassId="{Binding Id}"
+                                                    On="{Binding Active}"
                                                       />
                                     </DataTemplate>
                                 </ListView.ItemTemplate>

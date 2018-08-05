@@ -43,14 +43,11 @@ namespace TournamentTest.Pages.Tournaments
         private void saveButton_Clicked(object sender, EventArgs e)
         {
 
-            TournamentMain tournament = new TournamentMain()
-            {
-                Name = nameEntry.Text,
-                StartDate = dateEntry.Date
-            };
+            openTournament.Name = nameEntry.Text;
+            openTournament.StartDate = dateEntry.Date;
 
             //Check Name
-            if (tournament.Name == null || tournament.Name.ToString().Trim() == "")
+            if (openTournament.Name == null || openTournament.Name.ToString().Trim() == "")
             {
                 DisplayAlert("Warning!", "Please enter a tournament name!", "OK");
                 return;
@@ -59,7 +56,7 @@ namespace TournamentTest.Pages.Tournaments
             //Check Date
             try
             {
-                DateTime.Parse(tournament.StartDate.ToString());
+                DateTime.Parse(openTournament.StartDate.ToString());
             }
             catch
             {
@@ -79,13 +76,13 @@ namespace TournamentTest.Pages.Tournaments
                     
                     if (openTournament.Id == 0)
                     {
-                        conn.InsertWithChildren(tournament);
+                        conn.InsertWithChildren(openTournament);
                         DisplayAlert("Success", "Tournament successfully created", "OK");
 
                     }
                     else
                     {
-                        conn.UpdateWithChildren(tournament);
+                        conn.UpdateWithChildren(openTournament);
                         DisplayAlert("Success", "Tournament successfully updated", "OK");
 
                     }

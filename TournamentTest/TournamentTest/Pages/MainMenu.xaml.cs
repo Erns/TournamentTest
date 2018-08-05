@@ -22,8 +22,6 @@ namespace TournamentTest.Pages
             // Build the Menu
             MainMenuItems = new List<MainMenuItem>()
             {
-                //new MainMenuItem() { Title = "Page One", Icon = "menu_inbox.png", TargetType = typeof(PageOne) },
-                //new MainMenuItem() { Title = "Page Two", Icon = "menu_stock.png", TargetType = typeof(PageTwo) },
                 new MainMenuItem() { Title = "Players", Icon = "menu_inbox.png", TargetType = typeof(Players_Main) },
                 new MainMenuItem() { Title = "Tournaments", Icon = "menu_stock.png", TargetType = typeof(Tournaments_Main) }
             };
@@ -42,13 +40,6 @@ namespace TournamentTest.Pages
             {
                 switch (item.Title.ToString())
                 {
-                    //case "Page One":
-                    //    Detail = new NavigationPage(new PageOne());
-                    //    break;
-
-                    //case "Page Two":
-                    //    Detail = new NavigationPage(new PageTwo());
-                    //    break;
 
                     case "Players":
                         Detail = new NavigationPage(new Players_Main());
