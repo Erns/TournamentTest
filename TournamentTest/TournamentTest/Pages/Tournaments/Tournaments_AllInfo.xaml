@@ -34,7 +34,7 @@
                 </ListView>
 
                 <!--FAB-->
-                <Button Style="{StaticResource fabBtnStyle}" Clicked="addPlayers">
+                <Button x:Name="fabAddPlayers" Style="{StaticResource fabBtnStyle}" Clicked="addPlayers">
                     <Button.Effects>
                         <local:ShadowEffect Radius="5" DistanceX="5" DistanceY="5">
                             <local:ShadowEffect.Color>

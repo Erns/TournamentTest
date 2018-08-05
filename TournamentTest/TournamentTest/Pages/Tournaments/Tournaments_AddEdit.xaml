@@ -6,13 +6,21 @@
         <StackLayout  Padding="25, 10, 25, 10">
             
             <Entry x:Name="nameEntry"
-                   Placeholder="Tournament Name" />
+                   Placeholder="Tournament Name"
+                   Keyboard="Text"/>
 
-            <StackLayout Orientation="Horizontal" >
+            <Entry x:Name="pointMaxEntry"
+                   Placeholder="Max Points"
+                   Keyboard="Numeric"
+                   Text="200" />
+
+            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
                 <Label Text="Event Date:"
+                       HorizontalOptions="Start"
                        VerticalOptions="CenterAndExpand" />
 
                 <DatePicker x:Name="dateEntry"
+                            HorizontalOptions="EndAndExpand"
                             VerticalOptions="CenterAndExpand" />
             </StackLayout>
             
@@ -21,6 +29,12 @@
                          VerticalOptions="EndAndExpand">
 
 
+                <Button Text="Delete"
+                        BackgroundColor="Red"
+                        x:Name="deleteButton"
+                        VerticalOptions="End"
+                        Clicked="deleteButton_Clicked"/>
+                
                 <Button Text="Save"
                     BackgroundColor="LightGray"
                     x:Name="saveButton"                      
@@ -29,7 +43,7 @@
                     HorizontalOptions="FillAndExpand" />
 
             </StackLayout>
-            
+
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

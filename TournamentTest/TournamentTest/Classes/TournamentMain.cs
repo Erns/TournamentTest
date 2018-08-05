@@ -13,6 +13,8 @@ namespace TournamentTest.Classes
         public int Id { get; set; }
         public string Name { get; set; }
         public DateTime StartDate { get; set; }
+        public int MaxPoints { get; set; }
+        public Nullable<DateTime> DateDeleted { get; set; } = null;
 
         [OneToMany(CascadeOperations = CascadeOperation.All)]
         public List<TournamentMainPlayer> Players { get; set; } = new List<TournamentMainPlayer>();
@@ -78,10 +80,10 @@ namespace TournamentTest.Classes
         public int Number { get; set; }
 
         [ForeignKey(typeof(Player))]
-        public int Player1Id { get; set; }
+        public int Player1Id { get; set; } = 0;
 
         [ForeignKey(typeof(Player))]
-        public int Player2Id { get; set; }
+        public int Player2Id { get; set; } = 0;
     }
 
     public class TournamentMainRoundTableResult

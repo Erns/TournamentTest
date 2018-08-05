@@ -16,13 +16,15 @@ namespace TournamentTest.Pages.Tournaments
 
         private TournamentMain openTournament;
 
+        //Open new tournament
 		public Tournaments_AddEdit ()
 		{
 			InitializeComponent ();
             openTournament = new TournamentMain();
+            deleteButton.IsVisible = false;
 		}
 
-
+        //Open existing tournament
         public Tournaments_AddEdit(int intTournID)
         {
             InitializeComponent();
@@ -36,20 +38,30 @@ namespace TournamentTest.Pages.Tournaments
                 openTournament = conn.GetWithChildren<TournamentMain>(intTournID);
 
                 nameEntry.Text = openTournament.Name;
-                dateEntry.Date = openTournament.StartDate;
+                pointMaxEntry.Text = openTournament.MaxPoints.ToString();
+                dateEntry.Date = openTournament.StartDate;        
             }
         }
+        
 
         private void saveButton_Clicked(object sender, EventArgs e)
         {
 
             openTournament.Name = nameEntry.Text;
             openTournament.StartDate = dateEntry.Date;
+            openTournament.MaxPoints = Convert.ToInt32(Math.Round(Convert.ToDecimal(pointMaxEntry.Text)));
 
             //Check Name
             if (openTournament.Name == null || openTournament.Name.ToString().Trim() == "")
             {
                 DisplayAlert("Warning!", "Please enter a tournament name!", "OK");
+                return;
+            }
+
+            //Check Name
+            if (openTournament.MaxPoints <= 0)
+            {
+                DisplayAlert("Warning!", "Please enter a valid point number!", "OK");
                 return;
             }
 
@@ -96,6 +108,26 @@ namespace TournamentTest.Pages.Tournaments
                 Navigation.PopAsync();
             }
             
+
+        }
+
+        //Delete
+        async void deleteButton_Clicked(object sender, EventArgs e)
+        {
+            var confirmed = await DisplayAlert("Confirm", "Do you want to delete this tournament?", "Yes", "No");
+            if (confirmed)
+            {
+                using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
+                {
+                    conn.CreateTable<TournamentMain>();
+                    openTournament.DateDeleted = DateTime.Now;
+                    conn.Update(openTournament);
+                }
+
+                //Remove this page and the previous page from navigation stack (remove edit page, remove tournament info page, returning to tournament main list)
+                Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 1]);
+                Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 1]);
+            }
 
         }
     }

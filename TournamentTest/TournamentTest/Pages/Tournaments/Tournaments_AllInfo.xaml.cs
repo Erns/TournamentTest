@@ -59,12 +59,44 @@ namespace TournamentTest.Pages.Tournaments
 
             }
 
+
+            //Remove all the "Round" tabs and then repopulate them
+            for (int index = this.Children.Count - 1; index > 0; index--)
+            {
+                if (index > 0)
+                {
+                    this.Children.RemoveAt(index);
+                }
+            }
+
+            foreach (TournamentMainRound round in objTournMain.Rounds)
+            {
+                Children.Add(new Pages.Tournaments.Tournaments_RoundInfo("Round " + Children.Count));
+            }
+
+
         }
 
         //Open add player popup
         void addPlayers()
         {
             addPlayersPopup.IsVisible = true;        
+        }
+
+
+        //Hide add player popup when hitting the back button
+        protected override bool OnBackButtonPressed()
+        {
+            if (addPlayersPopup.IsVisible)
+            {
+                addPlayersPopup.IsVisible = false;
+                OnAppearing();  //Refresh page so that the popup has all the correct players selected and set
+                return true;    //Prevent back button from continuing
+            }
+            else
+            {
+                return base.OnBackButtonPressed();
+            }
         }
 
         //Save player popup
@@ -79,6 +111,7 @@ namespace TournamentTest.Pages.Tournaments
 
                 tournamentPlayer.TournmentId = intTournID;
                 tournamentPlayer.PlayerId = ID;
+                tournamentPlayer.Active = true;
                 objTournMain.Players.Add(tournamentPlayer);
             }
 
@@ -134,7 +167,74 @@ namespace TournamentTest.Pages.Tournaments
 
         private void startRoundBtn_ToolbarItem_Activated(object sender, EventArgs e)
         {
+            if (objTournMain.Players.Count == 0)
+            {
+                DisplayAlert("Warning!", "You must add players first to this tournament!", "D'oh!");
+                return;
+            }
 
+            //How to proceed when no rounds have started (Will likely reuse much/most/all for subsequent rounds, but just to start)
+            if (objTournMain.Rounds.Count == 0)
+            {
+                //Grab list of currently active players in the tournament
+                List<TournamentMainPlayer> lstActiveTournamentPlayers = new List<TournamentMainPlayer>();
+                foreach(TournamentMainPlayer player in objTournMain.Players)
+                {
+                    if (player.Active) lstActiveTournamentPlayers.Add(player);
+                }
+
+                //Create a new round
+                TournamentMainRound round = new TournamentMainRound();
+                round.Number = objTournMain.Rounds.Count + 1;
+
+                //First round, completely random
+                lstActiveTournamentPlayers.Shuffle();
+
+
+                TournamentMainRoundTable roundTable = new TournamentMainRoundTable();
+                foreach (TournamentMainPlayer player in lstActiveTournamentPlayers)
+                {     
+                    if (roundTable.Player1Id != 0 && roundTable.Player2Id != 0)
+                    {
+                        round.Tables.Add(roundTable);
+                        roundTable = new TournamentMainRoundTable();
+                    }
+                    
+                    if (roundTable.Player1Id == 0)
+                    {
+                        roundTable.Number = round.Tables.Count + 1;
+                        roundTable.Player1Id = player.Id;
+                    }
+                    else if (roundTable.Player2Id == 0)
+                    {
+                        roundTable.Player2Id = player.Id;
+                    }
+                }
+
+                round.Players.AddRange(lstActiveTournamentPlayers);
+                round.Tables.Add(roundTable);
+
+                objTournMain.Rounds.Add(round);
+
+                using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
+                {
+                    Utilities.CreateTournamentMain(conn);
+
+                    try
+                    {
+
+                        conn.InsertOrReplaceWithChildren(round);
+                        conn.InsertOrReplaceWithChildren(objTournMain);
+
+                    }
+                    catch
+                    {
+                        DisplayAlert("Warning!", "Error adding round to tournament!", "OK");
+                    }
+
+                    OnAppearing();
+                }
+            }
         }
 
         

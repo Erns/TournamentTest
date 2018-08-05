@@ -6,10 +6,12 @@
         <StackLayout Padding="25, 10, 25, 10">
 
             <Entry x:Name="nameEntry"
-                   Placeholder="Player Name" />
+                   Placeholder="Player Name"
+                   Keyboard="Text"/>
 
             <Entry x:Name="emailEntry"
-                   Placeholder="Email Address" />
+                   Placeholder="Email Address"
+                   Keyboard="Email"/>
 
             <StackLayout Orientation="Horizontal">
                 <Label Text="Player Active"
