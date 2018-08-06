@@ -1,12 +1,44 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:TournamentTest.Classes"
              x:Class="TournamentTest.Pages.Tournaments.Tournaments_RoundInfo">
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
+        <Grid Padding="10">
+
+            <ListView x:Name="tournamentTableListView">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Orientation="Horizontal">
+
+                                <Entry Placeholder="Score 1" Text="{Binding Player1Score, Mode=TwoWay}" ClassId="{Binding Id}" HorizontalOptions="Start" VerticalOptions="CenterAndExpand" Keyboard="Numeric" PropertyChanged="Entry_PropertyChanged_Score1" Completed="Entry_Completed" TextChanged="Entry_TextChanged" />
+                                <Label Text="{Binding TableName}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" />
+                                <Entry Placeholder="Score 2" Text="{Binding Player2Score, Mode=TwoWay}" ClassId="{Binding Id}" HorizontalOptions="Start" VerticalOptions="CenterAndExpand" Keyboard="Numeric" PropertyChanged="Entry_PropertyChanged_Score2" />
+
+                            </StackLayout>
+                            
+                        </ViewCell>
+                        
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+
+            <Button Style="{StaticResource fabBtnStyle}" BackgroundColor="DodgerBlue" Clicked="Handle_FabClicked">
+                <Button.Effects>
+                    <local:ShadowEffect Radius="5" DistanceX="5" DistanceY="5">
+                        <local:ShadowEffect.Color>
+                            <OnPlatform x:TypeArguments="Color">
+                                <On Platform="iOS" Value="Black" />
+                                <On Platform="Android" Value="Black" />
+                                <On Platform="UWP" Value="Black" />
+                            </OnPlatform>
+                        </local:ShadowEffect.Color>
+                    </local:ShadowEffect>
+                </Button.Effects>
+            </Button>
+
+        </Grid>
     </ContentPage.Content>
 </ContentPage>

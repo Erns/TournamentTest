@@ -6,14 +6,16 @@ namespace TournamentTest.Classes
 {
     public static class Utilities
     {
-        public static void CreateTournamentMain(SQLite.SQLiteConnection conn)
+        public static void InitializeTournamentMain(SQLite.SQLiteConnection conn)
         {
             //Need to create all tables for SQLite
             conn.CreateTable<TournamentMain>();
             conn.CreateTable<TournamentMainPlayer>();
             conn.CreateTable<TournamentMainRound>();
+            conn.CreateTable<TournamentMainRoundPlayer>();
             conn.CreateTable<TournamentMainRoundTable>();
-            conn.CreateTable<TournamentMainRoundTableResult>();
+            //conn.CreateTable<TournamentMainRoundResult>();
+
         }
 
         private static Random rng = new Random();

@@ -32,7 +32,7 @@ namespace TournamentTest.Pages.Tournaments
 
             using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
             {
-                Utilities.CreateTournamentMain(conn);
+                Utilities.InitializeTournamentMain(conn);
                 conn.CreateTable<Player>();
 
                 openTournament = conn.GetWithChildren<TournamentMain>(intTournID);
@@ -80,7 +80,7 @@ namespace TournamentTest.Pages.Tournaments
             using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
             {
 
-                Utilities.CreateTournamentMain(conn);
+                Utilities.InitializeTournamentMain(conn);
 
                 //Create
                 try

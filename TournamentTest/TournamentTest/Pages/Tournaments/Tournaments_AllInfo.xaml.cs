@@ -33,11 +33,11 @@ namespace TournamentTest.Pages.Tournaments
 
             using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
             {
-                Utilities.CreateTournamentMain(conn);
+                Utilities.InitializeTournamentMain(conn);
                 conn.CreateTable<Player>();
 
                 objTournMain = new TournamentMain();
-                objTournMain = conn.GetWithChildren<TournamentMain>(intTournID);
+                objTournMain = conn.GetWithChildren<TournamentMain>(intTournID, true);
                 Title = objTournMain.Name;
 
                 UpdatePlayerList(conn);
@@ -69,11 +69,17 @@ namespace TournamentTest.Pages.Tournaments
                 }
             }
 
+            //Add each round as tabs
             foreach (TournamentMainRound round in objTournMain.Rounds)
             {
-                Children.Add(new Pages.Tournaments.Tournaments_RoundInfo("Round " + Children.Count));
+                Children.Add(new Tournaments_RoundInfo("Round " + round.Number, round.Id));
             }
 
+            //Remove option to delete round if there are no rounds
+            if (objTournMain.Rounds.Count == 0)
+            {
+                ToolbarItems.Remove(deleteRoundBtn);
+            }
 
         }
 
@@ -117,7 +123,7 @@ namespace TournamentTest.Pages.Tournaments
 
             using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
             {
-                Utilities.CreateTournamentMain(conn);
+                Utilities.InitializeTournamentMain(conn);
 
                 conn.DeleteAll(objTournMain.Players);
 
@@ -177,25 +183,43 @@ namespace TournamentTest.Pages.Tournaments
             if (objTournMain.Rounds.Count == 0)
             {
                 //Grab list of currently active players in the tournament
-                List<TournamentMainPlayer> lstActiveTournamentPlayers = new List<TournamentMainPlayer>();
+                List<TournamentMainRoundPlayer> lstActiveTournamentPlayers = new List<TournamentMainRoundPlayer>();
                 foreach(TournamentMainPlayer player in objTournMain.Players)
                 {
-                    if (player.Active) lstActiveTournamentPlayers.Add(player);
+                    if (player.Active)
+                    {
+                        TournamentMainRoundPlayer roundPlayer = new TournamentMainRoundPlayer
+                        {
+                            PlayerId = player.PlayerId,
+                            Active = true
+                        };
+                        lstActiveTournamentPlayers.Add(roundPlayer);
+                    }
                 }
 
                 //Create a new round
                 TournamentMainRound round = new TournamentMainRound();
+                round.TournmentId = intTournID;
                 round.Number = objTournMain.Rounds.Count + 1;
+                round.Players.AddRange(lstActiveTournamentPlayers);
 
-                //First round, completely random
-                lstActiveTournamentPlayers.Shuffle();
+                if (objTournMain.Rounds.Count == 0)
+                {
+                    //First round, completely random player pairings
+                    lstActiveTournamentPlayers.Shuffle();
+                }
+                else
+                {
 
+                }
 
+                //Create each table, pair 'em up
                 TournamentMainRoundTable roundTable = new TournamentMainRoundTable();
-                foreach (TournamentMainPlayer player in lstActiveTournamentPlayers)
+                foreach (TournamentMainRoundPlayer player in lstActiveTournamentPlayers)
                 {     
                     if (roundTable.Player1Id != 0 && roundTable.Player2Id != 0)
                     {
+                        setRoundTableName(ref roundTable);
                         round.Tables.Add(roundTable);
                         roundTable = new TournamentMainRoundTable();
                     }
@@ -203,33 +227,29 @@ namespace TournamentTest.Pages.Tournaments
                     if (roundTable.Player1Id == 0)
                     {
                         roundTable.Number = round.Tables.Count + 1;
-                        roundTable.Player1Id = player.Id;
+                        roundTable.Player1Id = player.PlayerId;
                     }
                     else if (roundTable.Player2Id == 0)
                     {
-                        roundTable.Player2Id = player.Id;
+                        roundTable.Player2Id = player.PlayerId;
                     }
                 }
 
-                round.Players.AddRange(lstActiveTournamentPlayers);
+                setRoundTableName(ref roundTable);
                 round.Tables.Add(roundTable);
 
-                objTournMain.Rounds.Add(round);
 
+                //Add/Save the round
                 using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
                 {
-                    Utilities.CreateTournamentMain(conn);
-
+                    Utilities.InitializeTournamentMain(conn);
                     try
                     {
-
-                        conn.InsertOrReplaceWithChildren(round);
-                        conn.InsertOrReplaceWithChildren(objTournMain);
-
+                        conn.InsertWithChildren(round, true);
                     }
-                    catch
+                    catch(Exception ex)
                     {
-                        DisplayAlert("Warning!", "Error adding round to tournament!", "OK");
+                        DisplayAlert("Warning!", "Error adding round to tournament! " + ex.Message, "OK");
                     }
 
                     OnAppearing();
@@ -237,6 +257,61 @@ namespace TournamentTest.Pages.Tournaments
             }
         }
 
-        
+        private void setRoundTableName(ref TournamentMainRoundTable roundTable)
+        {
+            using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
+            {
+
+                conn.CreateTable<Player>();
+                Player player;
+
+                string strPlayer1Name = "N/A";
+                string strPlayer2Name = "N/A";
+
+                if (roundTable.Player1Id > 0)
+                {
+                    player = conn.Get<Player>(roundTable.Player1Id);
+                    strPlayer1Name = player.Name;
+                }
+
+                if (roundTable.Player2Id > 0)
+                {
+                    player = conn.Get<Player>(roundTable.Player2Id);
+                    strPlayer2Name = player.Name;
+                }
+
+                roundTable.Player1Name = strPlayer1Name;
+                roundTable.Player2Name = strPlayer2Name;
+                roundTable.TableName = string.Format("{0} vs {1}", strPlayer1Name, strPlayer2Name);
+            }
+        }
+
+        //Delete the last round
+        async private void deleteRoundBtn_Activated(object sender, EventArgs e)
+        {
+
+            var confirmed = await DisplayAlert("Confirm", "Do you want to delete Round " + objTournMain.Rounds.Count + "?  This cannot be undone!", "Yes", "No");
+            if (confirmed)
+            {
+                using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
+                {
+
+                    Utilities.InitializeTournamentMain(conn);
+
+                    try
+                    {
+                        //Grab the latest round and delete it
+                        TournamentMainRound round = objTournMain.Rounds[objTournMain.Rounds.Count - 1];
+                        conn.Delete(round, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        await DisplayAlert("Warning!", "Error deleting round from tournament! " + ex.Message, "OK");
+                    }
+
+                    OnAppearing();
+                }
+            }
+        }
     }
 }

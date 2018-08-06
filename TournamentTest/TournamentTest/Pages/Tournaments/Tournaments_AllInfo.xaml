@@ -14,9 +14,13 @@
         <ToolbarItem Text="Start Next Round"
                      Order="Secondary"
                      Activated="startRoundBtn_ToolbarItem_Activated"
-                     x:Name="startRoundBtn">
-            
-        </ToolbarItem>
+                     x:Name="startRoundBtn" />
+
+        <ToolbarItem Text="Delete Latest Round"
+                     Order="Secondary"
+                     Activated="deleteRoundBtn_Activated"
+                     x:Name="deleteRoundBtn" />
+        
     </TabbedPage.ToolbarItems> 
 
     <ContentPage Title="Players" >
