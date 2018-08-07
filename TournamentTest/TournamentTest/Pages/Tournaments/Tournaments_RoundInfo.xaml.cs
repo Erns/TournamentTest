@@ -16,19 +16,12 @@ namespace TournamentTest.Pages.Tournaments
 
         private int intRoundId = 0;
 
-        private Dictionary<int, int?> dctPlayerScores;
-
 		public Tournaments_RoundInfo (string strTitle, int intRoundId)
 		{
 			InitializeComponent ();
             Title = strTitle;
             this.intRoundId = intRoundId;
-		}
 
-
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
 
             using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
             {
@@ -40,25 +33,14 @@ namespace TournamentTest.Pages.Tournaments
 
                 tournamentTableListView.ItemsSource = lstTables;
 
-
-                dctPlayerScores = new Dictionary<int, int?>();
-
-                foreach (TournamentMainRoundTable table in lstTables)
-                {
-                    if (table.Player1Id > 0)
-                    {
-                        if(!dctPlayerScores.ContainsKey(table.Player1Id)) dctPlayerScores.Add(table.Player1Id, table.Player1Score);
-                    }
-
-                    if (table.Player2Id > 0)
-                    {
-                        if (!dctPlayerScores.ContainsKey(table.Player2Id)) dctPlayerScores.Add(table.Player2Id, table.Player2Score);
-                    }
-                }
-
-
             }
 
+        }
+
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
         }
 
         void Handle_FabClicked(object sender, System.EventArgs e)
@@ -66,53 +48,38 @@ namespace TournamentTest.Pages.Tournaments
 
         }
 
-        private void Entry_PropertyChanged_Score1(Entry sender, System.ComponentModel.PropertyChangedEventArgs e)
+
+        private void Entry_TextChanged_Score1(Entry sender, TextChangedEventArgs e)
         {
-            //UpdateTableScores(sender, 1);
+            UpdateTableScores(sender, e.NewTextValue, 1);
+        }
+
+        private void Entry_TextChanged_Score2(Entry sender, TextChangedEventArgs e)
+        {
+            UpdateTableScores(sender, e.NewTextValue, 2);
         }
 
 
-        private void Entry_PropertyChanged_Score2(Entry sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void UpdateTableScores(Entry sender, string strNewValue, int playerNumber)
         {
-            //UpdateTableScores(sender, 2);
-        }
 
-        private void UpdateTableScores(Entry sender, int playerNumber)
-        {
-            if (sender.ClassId is null) return;
+            int intTableId = Convert.ToInt32(sender.ReturnCommandParameter);
+            if (intTableId == 0) return;
 
-            int intTableId = Convert.ToInt32(sender.ClassId);
-            int intPlayerId = Convert.ToInt32(sender.StyleClass);
+            Nullable<int> intNewValue = null;
 
-            int? intCurrentScore = null;
-            int? intSavedScore = null;
+            if (strNewValue != "") intNewValue = Convert.ToInt32(strNewValue);
 
-            if (sender.Text != "") intCurrentScore = Convert.ToInt32(Math.Round(Convert.ToDecimal(sender.Text)));
-            if (dctPlayerScores.ContainsKey(intPlayerId)) intSavedScore = dctPlayerScores[intPlayerId];
-
-            if (intSavedScore != intCurrentScore)
+            using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
             {
-                using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
-                {
-                    Utilities.InitializeTournamentMain(conn);
+                Utilities.InitializeTournamentMain(conn);
 
-                    TournamentMainRoundTable roundTable = conn.Get<TournamentMainRoundTable>(intTableId);
-                    if (playerNumber == 1) roundTable.Player1Score = intCurrentScore;
-                    else roundTable.Player2Score = intCurrentScore;
+                TournamentMainRoundTable roundTable = conn.Get<TournamentMainRoundTable>(intTableId);
+                if (playerNumber == 1) roundTable.Player1Score = intNewValue;
+                else roundTable.Player2Score = intNewValue;
 
-                    conn.Update(roundTable);
-                }
+                conn.Update(roundTable);
             }
-        }
-
-        private void Entry_Completed(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void Entry_TextChanged(Entry sender, TextChangedEventArgs e)
-        {
-         
         }
     }
 }

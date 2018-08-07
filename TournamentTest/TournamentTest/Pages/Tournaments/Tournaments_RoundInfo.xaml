@@ -12,9 +12,9 @@
                         <ViewCell>
                             <StackLayout Orientation="Horizontal">
 
-                                <Entry Placeholder="Score 1" Text="{Binding Player1Score, Mode=TwoWay}" ClassId="{Binding Id}" HorizontalOptions="Start" VerticalOptions="CenterAndExpand" Keyboard="Numeric" PropertyChanged="Entry_PropertyChanged_Score1" Completed="Entry_Completed" TextChanged="Entry_TextChanged" />
+                                <Entry Placeholder="Score 1" Text="{Binding Player1Score}" HorizontalOptions="Start" VerticalOptions="CenterAndExpand" Keyboard="Numeric" ReturnCommandParameter="{Binding Id}" TextChanged="Entry_TextChanged_Score1" />
                                 <Label Text="{Binding TableName}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" />
-                                <Entry Placeholder="Score 2" Text="{Binding Player2Score, Mode=TwoWay}" ClassId="{Binding Id}" HorizontalOptions="Start" VerticalOptions="CenterAndExpand" Keyboard="Numeric" PropertyChanged="Entry_PropertyChanged_Score2" />
+                                <Entry Placeholder="Score 2" Text="{Binding Player2Score}" HorizontalOptions="Start" VerticalOptions="CenterAndExpand" Keyboard="Numeric" ReturnCommandParameter="{Binding Id}" TextChanged="Entry_TextChanged_Score2" />
 
                             </StackLayout>
                             
