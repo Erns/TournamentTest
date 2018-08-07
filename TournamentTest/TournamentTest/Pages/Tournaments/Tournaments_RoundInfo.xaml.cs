@@ -36,7 +36,9 @@ namespace TournamentTest.Pages.Tournaments
 
                 TournamentMainRound round = conn.GetWithChildren<TournamentMainRound>(intRoundId);
 
-                BindingContext = round;
+               // BindingContext = round;
+
+                BindingContext = new TournamentMainRoundTable_ViewModel(round.Tables[0]);
 
                 //ObservableCollection<TournamentMainRoundTable> lstTables = new ObservableCollection<TournamentMainRoundTable>();
 

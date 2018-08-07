@@ -56,7 +56,7 @@ namespace TournamentTest.Classes
 
     }
 
-    public class TournamentMainRound : TournamentMain_BaseViewModel
+    public class TournamentMainRound //: TournamentMain_BaseViewModel
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
@@ -91,7 +91,7 @@ namespace TournamentTest.Classes
         public bool Active { get; set; } = true;
     }
 
-    public class TournamentMainRoundTable : TournamentMain_BaseViewModel
+    public class TournamentMainRoundTable
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
@@ -121,7 +121,7 @@ namespace TournamentTest.Classes
             set
             {
                 _player1Winner = value;
-                RaisePropertyChanged();
+                //RaisePropertyChanged();
             }
         }
 
@@ -132,7 +132,7 @@ namespace TournamentTest.Classes
             set
             {
                 _player2Winner = value;
-                RaisePropertyChanged();
+                //RaisePropertyChanged();
             }
         }
 
@@ -144,7 +144,7 @@ namespace TournamentTest.Classes
             set
             {
                 _player1Score = value;
-                RaisePropertyChanged();
+                //RaisePropertyChanged();
                 UpdateScores(1);
             }
         }
@@ -156,7 +156,7 @@ namespace TournamentTest.Classes
             set
             {
                 _player2Score = value;
-                RaisePropertyChanged();
+                //RaisePropertyChanged();
                 UpdateScores(2);
             }
         }
@@ -167,13 +167,13 @@ namespace TournamentTest.Classes
             {
                 Player1Winner = true;
                 Player2Winner = false;
-                RaisePropertyChanged();
+                //RaisePropertyChanged();
             }
             else if (Player2Score > Player1Score)
             {
                 Player1Winner = false;
                 Player2Winner = true;
-                RaisePropertyChanged();
+                //RaisePropertyChanged();
             }
         }
 

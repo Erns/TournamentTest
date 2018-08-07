@@ -7,7 +7,7 @@
     <ContentPage.Content>
         <Grid Padding="10">
 
-            <ListView x:Name="tournamentTableListView" HasUnevenRows="True" SelectionMode="None" ItemsSource="{Binding Tables}">
+            <ListView x:Name="tournamentTableListView" HasUnevenRows="True" SelectionMode="None">
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
