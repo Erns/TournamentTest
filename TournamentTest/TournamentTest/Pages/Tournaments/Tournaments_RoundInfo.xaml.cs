@@ -1,10 +1,12 @@
 ﻿using SQLiteNetExtensions.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TournamentTest.Classes;
+using TournamentTest.MVVM;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -15,13 +17,18 @@ namespace TournamentTest.Pages.Tournaments
 	{
 
         private int intRoundId = 0;
+        //List<TournamentMainRoundTable> bvm;
 
-		public Tournaments_RoundInfo (string strTitle, int intRoundId)
+        public Tournaments_RoundInfo (string strTitle, int intRoundId)
 		{
 			InitializeComponent ();
             Title = strTitle;
             this.intRoundId = intRoundId;
 
+
+
+            //bvm = new List<TournamentMainRoundTable>();
+            //BindingContext = bvm;
 
             using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
             {
@@ -29,18 +36,19 @@ namespace TournamentTest.Pages.Tournaments
 
                 TournamentMainRound round = conn.GetWithChildren<TournamentMainRound>(intRoundId);
 
-                List<TournamentMainRoundTable> lstTables = round.Tables;
+                BindingContext = round;
 
-                tournamentTableListView.ItemsSource = lstTables;
+                //ObservableCollection<TournamentMainRoundTable> lstTables = new ObservableCollection<TournamentMainRoundTable>();
 
+                //foreach (TournamentMainRoundTable table in round.Tables)
+                //{
+                //    lstTables.Add(new TournamentMainRoundTable());
+                //}
+                //BindingContext = lstTables;
+
+                //tournamentTableListView.ItemsSource = lstTables;
+                
             }
-
-        }
-
-
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
         }
 
         void Handle_FabClicked(object sender, System.EventArgs e)
@@ -72,14 +80,45 @@ namespace TournamentTest.Pages.Tournaments
 
             using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
             {
-                Utilities.InitializeTournamentMain(conn);
+                //Utilities.InitializeTournamentMain(conn);
 
-                TournamentMainRoundTable roundTable = conn.Get<TournamentMainRoundTable>(intTableId);
-                if (playerNumber == 1) roundTable.Player1Score = intNewValue;
-                else roundTable.Player2Score = intNewValue;
+                //TournamentMainRoundTable roundTable = conn.Get<TournamentMainRoundTable>(intTableId);
+                //if (playerNumber == 1) roundTable.Player1Score = intNewValue;
+                //else roundTable.Player2Score = intNewValue;
 
-                conn.Update(roundTable);
+                ////if (roundTable.Player1Score > roundTable.Player2Score)
+                ////{
+                ////    roundTable.Player1Winner = true;
+                ////    roundTable.Player2Winner = false;
+                ////}
+                ////else if (roundTable.Player2Score > roundTable.Player1Score)
+                ////{
+                ////    roundTable.Player1Winner = false;
+                ////    roundTable.Player2Winner = true;
+                ////}
+                ////else
+                ////{
+                ////    roundTable.Player1Winner = false;
+                ////    roundTable.Player2Winner = false;
+                ////}
+
+                //conn.Update(roundTable);
+
+                ////TournamentMainRound round = conn.GetWithChildren<TournamentMainRound>(intRoundId);
+                ////tournamentTableListView.ItemsSource = round.Tables;
+
             }
         }
+
+        private void Switch_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+
+        }
+
+        private void Switch_Toggled(object sender, ToggledEventArgs e)
+        {
+
+        }
+
     }
 }

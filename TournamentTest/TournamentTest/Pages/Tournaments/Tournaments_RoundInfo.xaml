@@ -2,19 +2,48 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:TournamentTest.Classes"
+             xmlns:local1="clr-namespace:TournamentTest.MVVM"
              x:Class="TournamentTest.Pages.Tournaments.Tournaments_RoundInfo">
     <ContentPage.Content>
         <Grid Padding="10">
 
-            <ListView x:Name="tournamentTableListView">
+            <ListView x:Name="tournamentTableListView" HasUnevenRows="True" SelectionMode="None" ItemsSource="{Binding Tables}">
+
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <StackLayout Orientation="Horizontal">
+                            <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+                                <Label Text="{Binding Number, StringFormat='Table {0}'}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" FontSize="Medium" FontAttributes="Bold" />
+                                <Grid HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+                                    
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="50"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="25"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="50"/>
+                                    </Grid.ColumnDefinitions>
 
-                                <Entry Placeholder="Score 1" Text="{Binding Player1Score}" HorizontalOptions="Start" VerticalOptions="CenterAndExpand" Keyboard="Numeric" ReturnCommandParameter="{Binding Id}" TextChanged="Entry_TextChanged_Score1" />
-                                <Label Text="{Binding TableName}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" />
-                                <Entry Placeholder="Score 2" Text="{Binding Player2Score}" HorizontalOptions="Start" VerticalOptions="CenterAndExpand" Keyboard="Numeric" ReturnCommandParameter="{Binding Id}" TextChanged="Entry_TextChanged_Score2" />
+                                    <Entry Grid.Row="0" Grid.Column="0" Placeholder="#1" MaxLength="3" Text="{Binding Player1Score, Mode=TwoWay}" HorizontalOptions="Fill" VerticalOptions="CenterAndExpand" Keyboard="Numeric" ReturnCommandParameter="{Binding Id}" TextChanged="Entry_TextChanged_Score1" />
+
+                                    <Switch Grid.Row="0" Grid.Column="1" IsToggled="{Binding Player1Winner, Mode=TwoWay}" PropertyChanged="Switch_PropertyChanged" Toggled="Switch_Toggled"  />
+
+                                    <Label Grid.Row="0" Grid.Column="2" Text="{Binding Player1Name}" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" HorizontalTextAlignment="Start"  />
+
+                                    <Label Grid.Row="0" Grid.Column="3" Text=" vs " HorizontalOptions="Center" VerticalOptions="CenterAndExpand" HorizontalTextAlignment="Center" />
+
+                                    <Label Grid.Row="0" Grid.Column="4" Text="{Binding Player2Name}" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" HorizontalTextAlignment="End" />
+
+                                    <Switch Grid.Row="0" Grid.Column="5" IsToggled="{Binding Player2Winner, Mode=TwoWay}"  />
+
+                                    <Entry Grid.Row="0" Grid.Column="6" Placeholder="#2" MaxLength="3" Text="{Binding Player2Score, Mode=TwoWay}" HorizontalOptions="Fill" VerticalOptions="CenterAndExpand" Keyboard="Numeric" ReturnCommandParameter="{Binding Id}" TextChanged="Entry_TextChanged_Score2" />
+
+                                </Grid>
 
                             </StackLayout>
                             
@@ -30,9 +59,7 @@
                     <local:ShadowEffect Radius="5" DistanceX="5" DistanceY="5">
                         <local:ShadowEffect.Color>
                             <OnPlatform x:TypeArguments="Color">
-                                <On Platform="iOS" Value="Black" />
-                                <On Platform="Android" Value="Black" />
-                                <On Platform="UWP" Value="Black" />
+                                <On Platform="iOS, Android, UWP" Value="Black" />
                             </OnPlatform>
                         </local:ShadowEffect.Color>
                     </local:ShadowEffect>

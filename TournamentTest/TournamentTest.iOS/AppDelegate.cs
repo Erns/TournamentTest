@@ -23,7 +23,7 @@ namespace TournamentTest.iOS
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
-            string fileName = "books_db.sqlite";
+            string fileName = "tournaments_db.sqlite";
             string fileLocation = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "..", "Library");
             string full_path = Path.Combine(fileLocation, fileName);
 

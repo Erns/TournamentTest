@@ -21,7 +21,7 @@ namespace TournamentTest.Droid
             base.OnCreate(bundle);
 
 
-            string fileName = "books_db.sqlite";
+            string fileName = "tournaments_db.sqlite";
             string fileLocation = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
             string full_path = Path.Combine(fileLocation, fileName);
 

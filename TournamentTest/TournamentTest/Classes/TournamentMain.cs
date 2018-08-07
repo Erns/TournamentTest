@@ -4,10 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using TournamentTest.MVVM;
+using Xamarin.Forms;
 
 namespace TournamentTest.Classes
 {
-    public class TournamentMain : INotifyPropertyChanged
+    public class TournamentMain
     {
 
         [PrimaryKey, AutoIncrement]
@@ -22,8 +24,6 @@ namespace TournamentTest.Classes
 
         [OneToMany(CascadeOperations = CascadeOperation.All)]
         public List<TournamentMainRound> Rounds { get; set; } = new List<TournamentMainRound>();
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public string PlayersList()
         {
@@ -56,7 +56,7 @@ namespace TournamentTest.Classes
 
     }
 
-    public class TournamentMainRound
+    public class TournamentMainRound : TournamentMain_BaseViewModel
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
@@ -91,7 +91,7 @@ namespace TournamentTest.Classes
         public bool Active { get; set; } = true;
     }
 
-    public class TournamentMainRoundTable
+    public class TournamentMainRoundTable : TournamentMain_BaseViewModel
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
@@ -108,16 +108,89 @@ namespace TournamentTest.Classes
 
         public string Player1Name { get; set; } = "N/A";
 
-        public Nullable<int> Player1Score { get; set; } = null;
 
         [ForeignKey(typeof(Player))]
         public int Player2Id { get; set; } = 0;
 
         public string Player2Name { get; set; } = "N/A";
+        
+        public bool _player1Winner { get; set; } = false;
+        public bool Player1Winner
+        {
+            get { return _player1Winner; }
+            set
+            {
+                _player1Winner = value;
+                RaisePropertyChanged();
+            }
+        }
 
-        public Nullable<int> Player2Score { get; set; } = null;
+        public bool _player2Winner { get; set; } = false;
+        public bool Player2Winner
+        {
+            get { return _player2Winner; }
+            set
+            {
+                _player2Winner = value;
+                RaisePropertyChanged();
+            }
+        }
 
-        public Nullable<int> Winner { get; set; } = null;
+
+        private Nullable<int> _player1Score { get; set; } = null;
+        public Nullable<int> Player1Score
+        {
+            get { return _player1Score; }
+            set
+            {
+                _player1Score = value;
+                RaisePropertyChanged();
+                UpdateScores(1);
+            }
+        }
+
+        private Nullable<int> _player2Score { get; set; } = null;
+        public Nullable<int> Player2Score
+        {
+            get { return _player2Score; }
+            set
+            {
+                _player2Score = value;
+                RaisePropertyChanged();
+                UpdateScores(2);
+            }
+        }
+
+        private void UpdateScores(int intPlayer)
+        {
+            if (Player1Score > Player2Score)
+            {
+                Player1Winner = true;
+                Player2Winner = false;
+                RaisePropertyChanged();
+            }
+            else if (Player2Score > Player1Score)
+            {
+                Player1Winner = false;
+                Player2Winner = true;
+                RaisePropertyChanged();
+            }
+        }
+
+        //public Command SaveCommand
+        //{
+        //    get
+        //    {
+        //        return new Command(() => {
+        //            Message = "I am " + EmployeeModel.Name + ", My qualification is " + EmployeeModel.Qualification + " and working as a " + EmployeeModel.Designation;
+        //        });
+        //    }
+        //}
+        //public event PropertyChangedEventHandler PropertyChanged;
+        //protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        //{
+        //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        //}
 
     }
 
