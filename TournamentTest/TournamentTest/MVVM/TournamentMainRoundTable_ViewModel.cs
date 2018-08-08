@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
 using TournamentTest.Classes;
+using Xamarin.Forms;
 
 namespace TournamentTest.MVVM
 {
@@ -30,6 +31,44 @@ namespace TournamentTest.MVVM
             TournamentMainRoundTable = table;
         }
 
+        public Command SaveCommand
+        {
+            get
+            {
+                return new Command(() => {
+                    using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
+                    {
+                        Utilities.InitializeTournamentMain(conn);
+
+                        TournamentMainRoundTable roundTable = conn.Get<TournamentMainRoundTable>(TournamentMainRoundTable.Id);
+
+                        roundTable.Player1Score = TournamentMainRoundTable.Player1Score;
+                        roundTable.Player1Winner = TournamentMainRoundTable.Player1Winner;
+                        roundTable.Player2Score = TournamentMainRoundTable.Player2Score;
+                        roundTable.Player2Winner = TournamentMainRoundTable.Player2Winner;
+
+                        conn.Update(roundTable);
+                    }
+                });
+            }
+        }
+
+        public void UpdateRoundTable()
+        {
+            using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
+            {
+                Utilities.InitializeTournamentMain(conn);
+
+                TournamentMainRoundTable roundTable = conn.Get<TournamentMainRoundTable>(TournamentMainRoundTable.Id);
+
+                roundTable.Player1Score = TournamentMainRoundTable.Player1Score;
+                roundTable.Player1Winner = TournamentMainRoundTable.Player1Winner;
+                roundTable.Player2Score = TournamentMainRoundTable.Player2Score;
+                roundTable.Player2Winner = TournamentMainRoundTable.Player2Winner;
+
+                conn.Update(roundTable);
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

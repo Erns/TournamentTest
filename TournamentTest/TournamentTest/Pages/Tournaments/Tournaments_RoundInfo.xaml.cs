@@ -34,93 +34,19 @@ namespace TournamentTest.Pages.Tournaments
             {
                 Utilities.InitializeTournamentMain(conn);
 
-                TournamentMainRound round = conn.GetWithChildren<TournamentMainRound>(intRoundId);
+                TournamentMainRound round = new TournamentMainRound();
+                round = conn.GetWithChildren<TournamentMainRound>(intRoundId);
 
-               // BindingContext = round;
+                tournamentTableListView.ItemsSource = round.Tables;
 
-                BindingContext = new TournamentMainRoundTable_ViewModel(round.Tables[0]);
-
-                //ObservableCollection<TournamentMainRoundTable> lstTables = new ObservableCollection<TournamentMainRoundTable>();
-
+                //ObservableCollection<TournamentMainRoundTable_ViewModel> lstTables = new ObservableCollection<TournamentMainRoundTable_ViewModel>();
                 //foreach (TournamentMainRoundTable table in round.Tables)
                 //{
-                //    lstTables.Add(new TournamentMainRoundTable());
+                //    lstTables.Add(new TournamentMainRoundTable_ViewModel(table));
                 //}
-                //BindingContext = lstTables;
-
                 //tournamentTableListView.ItemsSource = lstTables;
-                
-            }
-        }
-
-        void Handle_FabClicked(object sender, System.EventArgs e)
-        {
-
-        }
-
-
-        private void Entry_TextChanged_Score1(Entry sender, TextChangedEventArgs e)
-        {
-            UpdateTableScores(sender, e.NewTextValue, 1);
-        }
-
-        private void Entry_TextChanged_Score2(Entry sender, TextChangedEventArgs e)
-        {
-            UpdateTableScores(sender, e.NewTextValue, 2);
-        }
-
-
-        private void UpdateTableScores(Entry sender, string strNewValue, int playerNumber)
-        {
-
-            int intTableId = Convert.ToInt32(sender.ReturnCommandParameter);
-            if (intTableId == 0) return;
-
-            Nullable<int> intNewValue = null;
-
-            if (strNewValue != "") intNewValue = Convert.ToInt32(strNewValue);
-
-            using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
-            {
-                //Utilities.InitializeTournamentMain(conn);
-
-                //TournamentMainRoundTable roundTable = conn.Get<TournamentMainRoundTable>(intTableId);
-                //if (playerNumber == 1) roundTable.Player1Score = intNewValue;
-                //else roundTable.Player2Score = intNewValue;
-
-                ////if (roundTable.Player1Score > roundTable.Player2Score)
-                ////{
-                ////    roundTable.Player1Winner = true;
-                ////    roundTable.Player2Winner = false;
-                ////}
-                ////else if (roundTable.Player2Score > roundTable.Player1Score)
-                ////{
-                ////    roundTable.Player1Winner = false;
-                ////    roundTable.Player2Winner = true;
-                ////}
-                ////else
-                ////{
-                ////    roundTable.Player1Winner = false;
-                ////    roundTable.Player2Winner = false;
-                ////}
-
-                //conn.Update(roundTable);
-
-                ////TournamentMainRound round = conn.GetWithChildren<TournamentMainRound>(intRoundId);
-                ////tournamentTableListView.ItemsSource = round.Tables;
 
             }
         }
-
-        private void Switch_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-
-        }
-
-        private void Switch_Toggled(object sender, ToggledEventArgs e)
-        {
-
-        }
-
     }
 }

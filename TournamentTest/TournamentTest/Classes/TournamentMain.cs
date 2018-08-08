@@ -3,6 +3,7 @@ using SQLiteNetExtensions.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text;
 using TournamentTest.MVVM;
 using Xamarin.Forms;
@@ -56,7 +57,7 @@ namespace TournamentTest.Classes
 
     }
 
-    public class TournamentMainRound //: TournamentMain_BaseViewModel
+    public class TournamentMainRound 
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
@@ -91,7 +92,8 @@ namespace TournamentTest.Classes
         public bool Active { get; set; } = true;
     }
 
-    public class TournamentMainRoundTable
+
+    public class TournamentMainRoundTable : INotifyPropertyChanged
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
@@ -113,84 +115,141 @@ namespace TournamentTest.Classes
         public int Player2Id { get; set; } = 0;
 
         public string Player2Name { get; set; } = "N/A";
-        
-        public bool _player1Winner { get; set; } = false;
+
+        private int _recursiveLvl = 0;  //Tracking how nested the recursion gets, trigger save on the last level to prevent unnecessary/excessive updates
+
+
+        public bool _scoreTied { get; set; } = false;
+        public bool ScoreTied
+        {
+            get { return _scoreTied; }
+            set
+            {
+                if (_scoreTied != value)
+                {
+                    _scoreTied = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private bool _player1Winner { get; set; } = false;
         public bool Player1Winner
         {
             get { return _player1Winner; }
             set
             {
-                _player1Winner = value;
-                //RaisePropertyChanged();
+                if (_player1Winner != value)
+                {
+                    _recursiveLvl += 1;
+                    _player1Winner = value;
+                    if (_player1Winner) Player2Winner = false;
+                    OnPropertyChanged();
+                    UpdateRoundTable();
+                    _recursiveLvl -= 1;
+                }
             }
         }
 
-        public bool _player2Winner { get; set; } = false;
+        private bool _player2Winner { get; set; } = false;
         public bool Player2Winner
         {
             get { return _player2Winner; }
             set
             {
-                _player2Winner = value;
-                //RaisePropertyChanged();
+                if (_player2Winner != value)
+                {
+                    _recursiveLvl += 1;
+                    _player2Winner = value;
+                    if (_player2Winner) Player1Winner = false;
+                    OnPropertyChanged();
+                    UpdateRoundTable();
+                    _recursiveLvl -= 1;
+                }
             }
         }
 
 
-        private Nullable<int> _player1Score { get; set; } = null;
-        public Nullable<int> Player1Score
+        private int _player1Score { get; set; }
+        public int Player1Score
         {
             get { return _player1Score; }
             set
             {
-                _player1Score = value;
-                //RaisePropertyChanged();
-                UpdateScores(1);
+                if (_player1Score != value)
+                {
+                    _recursiveLvl += 1;
+                    _player1Score = value;
+                    OnPropertyChanged();
+                    UpdateScores();
+                    UpdateRoundTable();
+                    _recursiveLvl -= 1;
+                }
             }
         }
 
-        private Nullable<int> _player2Score { get; set; } = null;
-        public Nullable<int> Player2Score
+        private int _player2Score { get; set; }
+        public int Player2Score
         {
             get { return _player2Score; }
             set
             {
-                _player2Score = value;
-                //RaisePropertyChanged();
-                UpdateScores(2);
+                if (_player2Score != value)
+                {
+                    _recursiveLvl += 1;
+                    _player2Score = value;                    
+                    OnPropertyChanged();
+                    UpdateScores();
+                    UpdateRoundTable();
+                    _recursiveLvl -= 1;
+                }
             }
         }
 
-        private void UpdateScores(int intPlayer)
+        private void UpdateScores()
         {
+            ScoreTied = false;
             if (Player1Score > Player2Score)
             {
                 Player1Winner = true;
-                Player2Winner = false;
-                //RaisePropertyChanged();
             }
             else if (Player2Score > Player1Score)
             {
-                Player1Winner = false;
                 Player2Winner = true;
-                //RaisePropertyChanged();
+            }
+            else
+            {
+                ScoreTied = true;
             }
         }
 
-        //public Command SaveCommand
-        //{
-        //    get
-        //    {
-        //        return new Command(() => {
-        //            Message = "I am " + EmployeeModel.Name + ", My qualification is " + EmployeeModel.Qualification + " and working as a " + EmployeeModel.Designation;
-        //        });
-        //    }
-        //}
-        //public event PropertyChangedEventHandler PropertyChanged;
-        //protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        //{
-        //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        //}
+        private void UpdateRoundTable()
+        {
+            if (Id == 0 || _recursiveLvl > 1) return;   
+
+            using (SQLiteConnection conn = new SQLiteConnection(App.DB_PATH))
+            {
+                Utilities.InitializeTournamentMain(conn);
+
+                TournamentMainRoundTable roundTable = this;
+                try
+                {
+                    conn.Update(roundTable);
+                }
+                catch
+                {
+                    //Do nothing.  When initialized, if a connection is already open it'll be busy.  No need to update while already loading.
+                    //Not currently able to find a way to check if a different connection to same tables are open
+                }
+                
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
     }
 

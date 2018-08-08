@@ -2,7 +2,6 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:TournamentTest.Classes"
-             xmlns:local1="clr-namespace:TournamentTest.MVVM"
              x:Class="TournamentTest.Pages.Tournaments.Tournaments_RoundInfo">
     <ContentPage.Content>
         <Grid Padding="10">
@@ -29,9 +28,9 @@
                                         <ColumnDefinition Width="50"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <Entry Grid.Row="0" Grid.Column="0" Placeholder="#1" MaxLength="3" Text="{Binding Player1Score, Mode=TwoWay}" HorizontalOptions="Fill" VerticalOptions="CenterAndExpand" Keyboard="Numeric" ReturnCommandParameter="{Binding Id}" TextChanged="Entry_TextChanged_Score1" />
+                                    <Entry Grid.Row="0" Grid.Column="0" Placeholder="#1" MaxLength="3" Text="{Binding Player1Score, Mode=TwoWay}" HorizontalOptions="Fill" VerticalOptions="CenterAndExpand" Keyboard="Numeric" />
 
-                                    <Switch Grid.Row="0" Grid.Column="1" IsToggled="{Binding Player1Winner, Mode=TwoWay}" PropertyChanged="Switch_PropertyChanged" Toggled="Switch_Toggled"  />
+                                    <Switch Grid.Row="0" Grid.Column="1" IsToggled="{Binding Player1Winner, Mode=TwoWay}" IsEnabled="{Binding ScoreTied, Mode=OneWay}" />
 
                                     <Label Grid.Row="0" Grid.Column="2" Text="{Binding Player1Name}" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" HorizontalTextAlignment="Start"  />
 
@@ -39,9 +38,9 @@
 
                                     <Label Grid.Row="0" Grid.Column="4" Text="{Binding Player2Name}" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" HorizontalTextAlignment="End" />
 
-                                    <Switch Grid.Row="0" Grid.Column="5" IsToggled="{Binding Player2Winner, Mode=TwoWay}"  />
+                                    <Switch Grid.Row="0" Grid.Column="5" IsToggled="{Binding Player2Winner, Mode=TwoWay}" IsEnabled="{Binding ScoreTied, Mode=OneWay}" />
 
-                                    <Entry Grid.Row="0" Grid.Column="6" Placeholder="#2" MaxLength="3" Text="{Binding Player2Score, Mode=TwoWay}" HorizontalOptions="Fill" VerticalOptions="CenterAndExpand" Keyboard="Numeric" ReturnCommandParameter="{Binding Id}" TextChanged="Entry_TextChanged_Score2" />
+                                    <Entry Grid.Row="0" Grid.Column="6" Placeholder="#2" MaxLength="3" Text="{Binding Player2Score, Mode=TwoWay}" HorizontalOptions="Fill" VerticalOptions="CenterAndExpand" Keyboard="Numeric" />
 
                                 </Grid>
 
@@ -54,7 +53,7 @@
             </ListView>
 
 
-            <Button Style="{StaticResource fabBtnStyle}" BackgroundColor="DodgerBlue" Clicked="Handle_FabClicked">
+            <Button Style="{StaticResource fabBtnStyle}" BackgroundColor="DodgerBlue">
                 <Button.Effects>
                     <local:ShadowEffect Radius="5" DistanceX="5" DistanceY="5">
                         <local:ShadowEffect.Color>
