@@ -14,8 +14,8 @@ namespace TournamentTest.Classes
             conn.CreateTable<TournamentMainRound>();
             conn.CreateTable<TournamentMainRoundPlayer>();
             conn.CreateTable<TournamentMainRoundTable>();
-            //conn.CreateTable<TournamentMainRoundResult>();
 
+            conn.CreateTable<Player>();
         }
 
         private static Random rng = new Random();

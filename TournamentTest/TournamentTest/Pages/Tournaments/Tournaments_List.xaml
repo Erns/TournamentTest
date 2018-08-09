@@ -23,9 +23,7 @@
                     <local:ShadowEffect Radius="5" DistanceX="5" DistanceY="5">
                         <local:ShadowEffect.Color>
                             <OnPlatform x:TypeArguments="Color">
-                                <On Platform="iOS" Value="Black" />
-                                <On Platform="Android" Value="Black" />
-                                <On Platform="UWP" Value="Black" />
+                                <On Platform="iOS, Android, UWP" Value="Black" />
                             </OnPlatform>
                         </local:ShadowEffect.Color>
                     </local:ShadowEffect>

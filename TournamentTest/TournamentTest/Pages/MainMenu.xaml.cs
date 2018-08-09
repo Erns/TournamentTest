@@ -30,6 +30,9 @@ namespace TournamentTest.Pages
             Detail = new NavigationPage(new Players_Main());
 
             InitializeComponent();
+
+            //Create all the needed tables out the gate
+            Utilities.InitializeTournamentMain(new SQLite.SQLiteConnection(App.DB_PATH));
         }
 
         // When a MenuItem is selected.

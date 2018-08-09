@@ -32,9 +32,6 @@ namespace TournamentTest.Pages.Tournaments
 
             using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
             {
-                Utilities.InitializeTournamentMain(conn);
-                conn.CreateTable<Player>();
-
                 openTournament = conn.GetWithChildren<TournamentMain>(intTournID);
 
                 nameEntry.Text = openTournament.Name;
@@ -79,8 +76,6 @@ namespace TournamentTest.Pages.Tournaments
             //Update database
             using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
             {
-
-                Utilities.InitializeTournamentMain(conn);
 
                 //Create
                 try

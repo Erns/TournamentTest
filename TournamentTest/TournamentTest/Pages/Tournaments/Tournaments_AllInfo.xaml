@@ -27,7 +27,7 @@
         <ContentPage.Content>
             <Grid Padding="10">
 
-                <ListView x:Name="activePlayersListView">
+                <ListView x:Name="activePlayersListView" SelectionMode="None">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <TextCell   Text="{Binding Name}"
@@ -43,9 +43,7 @@
                         <local:ShadowEffect Radius="5" DistanceX="5" DistanceY="5">
                             <local:ShadowEffect.Color>
                                 <OnPlatform x:TypeArguments="Color">
-                                    <On Platform="iOS" Value="Black" />
-                                    <On Platform="Android" Value="Black" />
-                                    <On Platform="UWP" Value="Black" />
+                                    <On Platform="iOS, Android, UWP" Value="Black" />
                                 </OnPlatform>
                             </local:ShadowEffect.Color>
                         </local:ShadowEffect>
@@ -57,20 +55,66 @@
                 <ContentView x:Name="addPlayersPopup" Margin="-10" BackgroundColor="#C0808080" Padding="10, 0" IsVisible="false" AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All">
                     <Grid>
                         <StackLayout Padding="10" Orientation="Vertical" BackgroundColor="White" VerticalOptions="Center" HorizontalOptions="Center">
+                            <SearchBar x:Name="playersListView_SearchBar" Placeholder="Search player" TextChanged="SearchBar_TextChanged"></SearchBar>
+                            <ListView x:Name="playersListView" SelectionMode="None" HasUnevenRows="True" >
+                                
+                                <ListView.Header>
+                                    <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+                                        <Grid HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="50"/>
+                                                <ColumnDefinition Width="50"/>
+                                            </Grid.ColumnDefinitions>
 
-                            <ListView x:Name="playersListView" >
+                                            <Label Grid.Row="0" Grid.Column="0"  Text="Player" FontAttributes="Bold" />
+                                            <Label Grid.Row="0" Grid.Column="1"  Text="Active" FontAttributes="Bold"  HorizontalOptions="Center"/>
+                                            <Label Grid.Row="0" Grid.Column="2"  Text="Bye" FontAttributes="Bold"  HorizontalOptions="Center"/>
+                                                
+                                        </Grid>
+                                        <BoxView Color="Gray"  HeightRequest="1" Opacity="0.5" />
+                                    </StackLayout>
+                                </ListView.Header>
+                                
+                                
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <SwitchCell Text="{Binding Name}"
-                                                    OnChanged="SwitchCell_OnChanged"                                                                                                        
-                                                    ClassId="{Binding Id}"
-                                                    On="{Binding Active}"
-                                                      />
+                                        <ViewCell>
+                                            <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="{Binding RowBackgroundColor}">
+                                                <Grid HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="50"/>
+                                                        <ColumnDefinition Width="50"/>
+                                                    </Grid.ColumnDefinitions>
+
+
+                                                    <Label Grid.Row="0" Grid.Column="0" Text="{Binding TournamentMainPlayer.PlayerName}" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" HorizontalTextAlignment="Start"  />
+
+                                                    <Switch Grid.Row="0" Grid.Column="1" IsToggled="{Binding PlayerActive_VM, Mode=TwoWay}" IsEnabled="{Binding ScoreTied_VM, Mode=TwoWay}" HorizontalOptions="Center" />
+
+                                                    <Switch Grid.Row="0" Grid.Column="2" IsToggled="{Binding PlayerBye_VM, Mode=TwoWay}" IsEnabled="{Binding PlayerActive_VM, Mode=OneWay}" HorizontalOptions="Center" />
+
+                                                </Grid>
+
+                                            </StackLayout>
+                                            
+                                        </ViewCell>
+
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
+
                             </ListView>
 
-                            <Button Text="OK" Clicked="addPlayers_Button_Clicked"/>
+                            <Button Text="Close" Clicked="closePlayers" />
+
                         </StackLayout>
                     </Grid>
                 </ContentView>

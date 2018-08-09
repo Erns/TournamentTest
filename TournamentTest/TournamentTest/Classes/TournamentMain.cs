@@ -2,11 +2,6 @@
 using SQLiteNetExtensions.Attributes;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Text;
-using TournamentTest.MVVM;
-using Xamarin.Forms;
 
 namespace TournamentTest.Classes
 {
@@ -26,12 +21,12 @@ namespace TournamentTest.Classes
         [OneToMany(CascadeOperations = CascadeOperation.All)]
         public List<TournamentMainRound> Rounds { get; set; } = new List<TournamentMainRound>();
 
-        public string PlayersList()
+        public string ActivePlayersList()
         {
             List<string> lstIDs = new List<string>();
             foreach (TournamentMainPlayer item in Players)
             {
-                lstIDs.Add(item.PlayerId.ToString());
+                if (item.Active) lstIDs.Add(item.PlayerId.ToString());
             }
 
             return String.Join(",", lstIDs.ToArray());
@@ -49,10 +44,10 @@ namespace TournamentTest.Classes
         [ForeignKey(typeof(Player))]
         public int PlayerId { get; set; }
 
+        public string PlayerName { get; set; }
         public bool Active { get; set; } = true;
-
+        public bool Bye { get; set; } = false;
         public int Score { get; set; }
-
         public int MOV { get; set; }
 
     }
@@ -88,168 +83,35 @@ namespace TournamentTest.Classes
 
         [ForeignKey(typeof(Player))]
         public int PlayerId { get; set; }
-
-        public bool Active { get; set; } = true;
     }
 
 
-    public class TournamentMainRoundTable : INotifyPropertyChanged
+    public class TournamentMainRoundTable
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
 
+        //Table general info
         [ForeignKey(typeof(TournamentMainRound))]
         public int RoundId { get; set; }
-
         public int Number { get; set; }
-
         public string TableName { get; set; }
+        public bool ScoreTied { get; set; } = false;
+        public bool Bye { get; set; }
 
+        //Player 1 Info
         [ForeignKey(typeof(Player))]
         public int Player1Id { get; set; } = 0;
-
         public string Player1Name { get; set; } = "N/A";
+        public int Player1Score { get; set; }
+        public bool Player1Winner { get; set; } = false;
 
-
+        //Player 2 info
         [ForeignKey(typeof(Player))]
         public int Player2Id { get; set; } = 0;
-
         public string Player2Name { get; set; } = "N/A";
-
-        private int _recursiveLvl = 0;  //Tracking how nested the recursion gets, trigger save on the last level to prevent unnecessary/excessive updates
-
-
-        public bool _scoreTied { get; set; } = false;
-        public bool ScoreTied
-        {
-            get { return _scoreTied; }
-            set
-            {
-                if (_scoreTied != value)
-                {
-                    _scoreTied = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private bool _player1Winner { get; set; } = false;
-        public bool Player1Winner
-        {
-            get { return _player1Winner; }
-            set
-            {
-                if (_player1Winner != value)
-                {
-                    _recursiveLvl += 1;
-                    _player1Winner = value;
-                    if (_player1Winner) Player2Winner = false;
-                    OnPropertyChanged();
-                    UpdateRoundTable();
-                    _recursiveLvl -= 1;
-                }
-            }
-        }
-
-        private bool _player2Winner { get; set; } = false;
-        public bool Player2Winner
-        {
-            get { return _player2Winner; }
-            set
-            {
-                if (_player2Winner != value)
-                {
-                    _recursiveLvl += 1;
-                    _player2Winner = value;
-                    if (_player2Winner) Player1Winner = false;
-                    OnPropertyChanged();
-                    UpdateRoundTable();
-                    _recursiveLvl -= 1;
-                }
-            }
-        }
-
-
-        private int _player1Score { get; set; }
-        public int Player1Score
-        {
-            get { return _player1Score; }
-            set
-            {
-                if (_player1Score != value)
-                {
-                    _recursiveLvl += 1;
-                    _player1Score = value;
-                    OnPropertyChanged();
-                    UpdateScores();
-                    UpdateRoundTable();
-                    _recursiveLvl -= 1;
-                }
-            }
-        }
-
-        private int _player2Score { get; set; }
-        public int Player2Score
-        {
-            get { return _player2Score; }
-            set
-            {
-                if (_player2Score != value)
-                {
-                    _recursiveLvl += 1;
-                    _player2Score = value;                    
-                    OnPropertyChanged();
-                    UpdateScores();
-                    UpdateRoundTable();
-                    _recursiveLvl -= 1;
-                }
-            }
-        }
-
-        private void UpdateScores()
-        {
-            ScoreTied = false;
-            if (Player1Score > Player2Score)
-            {
-                Player1Winner = true;
-            }
-            else if (Player2Score > Player1Score)
-            {
-                Player2Winner = true;
-            }
-            else
-            {
-                ScoreTied = true;
-            }
-        }
-
-        private void UpdateRoundTable()
-        {
-            if (Id == 0 || _recursiveLvl > 1) return;   
-
-            using (SQLiteConnection conn = new SQLiteConnection(App.DB_PATH))
-            {
-                Utilities.InitializeTournamentMain(conn);
-
-                TournamentMainRoundTable roundTable = this;
-                try
-                {
-                    conn.Update(roundTable);
-                }
-                catch
-                {
-                    //Do nothing.  When initialized, if a connection is already open it'll be busy.  No need to update while already loading.
-                    //Not currently able to find a way to check if a different connection to same tables are open
-                }
-                
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        public int Player2Score { get; set; }
+        public bool Player2Winner { get; set; } = false;
 
     }
 

@@ -63,13 +63,16 @@ namespace TournamentTest.Pages.Players
 
             using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
             {
-                conn.CreateTable<Player>();
 
                 int numberOfRows = 0;
 
                 if (player.Id > 0)
                 {
                     numberOfRows = conn.Update(player);
+
+                    //Update player names within the tournament player rosters
+                    conn.ExecuteScalar<TournamentMainPlayer>("UPDATE TournamentMainPlayer SET PlayerName = ? WHERE PlayerId = ?", player.Name, player.Id);
+
                     if (numberOfRows > 0) DisplayAlert("Success", "Player successfully updated", "Great!");
                     else DisplayAlert("Failure", "Player failed to be updated", "Oops!");
                 }

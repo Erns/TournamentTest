@@ -1,10 +1,12 @@
 ﻿using SQLiteNetExtensions.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TournamentTest.Classes;
+using TournamentTest.ViewModel;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -17,6 +19,8 @@ namespace TournamentTest.Pages.Tournaments
 
         private TournamentMain objTournMain = new TournamentMain();
         private List<int> lstPlayerIds = new List<int>();
+
+        private ObservableCollection<PlayerToTournamentMainPlayer_ViewModel> lstViewPlayers = new ObservableCollection<PlayerToTournamentMainPlayer_ViewModel>();
 
         //New
         public Tournaments_AllInfo (string strTitle, int tournamentId)
@@ -33,8 +37,6 @@ namespace TournamentTest.Pages.Tournaments
 
             using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
             {
-                Utilities.InitializeTournamentMain(conn);
-                conn.CreateTable<Player>();
 
                 objTournMain = new TournamentMain();
                 objTournMain = conn.GetWithChildren<TournamentMain>(intTournID, true);
@@ -43,20 +45,37 @@ namespace TournamentTest.Pages.Tournaments
                 UpdatePlayerList(conn);
 
                 //Get full list of players
-                List<Player> lstPlayers = conn.Query<Player>("SELECT * FROM Player WHERE (Active = 1 AND DateDeleted IS NULL) OR Id IN (" + objTournMain.PlayersList() + ")");
+                List<Player> lstPlayers = conn.Query<Player>("SELECT * FROM Player WHERE (Active = 1 AND DateDeleted IS NULL) OR Id IN (" + objTournMain.ActivePlayersList() + ")");
 
                 //Get list of currently active players in tournament
-                string[] arrActivePlayers = objTournMain.PlayersList().Split(',');
+                string[] arrActivePlayers = objTournMain.ActivePlayersList().Split(',');
 
-                //Get this list of player's active status
+
+                //Set using the ViewModel version.  This allows being able to manipulate back and forth across the class properties, while displaying as intended on the GUI
+                //while also ensuring none of the goings ons of the properties touching each other don't occur without this specific view model (such as the SQL table updates)
+                int intRow = 0;
+                lstViewPlayers = new ObservableCollection<PlayerToTournamentMainPlayer_ViewModel>();
+                TournamentMainPlayer tmpTournamentMainPlayer = null;
                 foreach (Player player in lstPlayers)
                 {
                     player.Active = false;
                     if (arrActivePlayers.Contains<string>(player.Id.ToString())) player.Active = true;
+                    intRow++;
+
+                    //Set the tournament player equivalent
+                    tmpTournamentMainPlayer = null;
+                    foreach (TournamentMainPlayer tournamentPlayer in objTournMain.Players)
+                    {
+                        if (tournamentPlayer.PlayerId == player.Id)
+                        {
+                            tmpTournamentMainPlayer = tournamentPlayer;
+                            break;
+                        }
+                    }
+
+                    lstViewPlayers.Add(new PlayerToTournamentMainPlayer_ViewModel(player, intTournID, intRow, tmpTournamentMainPlayer));
                 }
-
-                playersListView.ItemsSource = lstPlayers;
-
+                playersListView.ItemsSource = lstViewPlayers;
             }
 
 
@@ -72,7 +91,7 @@ namespace TournamentTest.Pages.Tournaments
             //Add each round as tabs
             foreach (TournamentMainRound round in objTournMain.Rounds)
             {
-                Children.Add(new Tournaments_RoundInfo("Round " + round.Number, round.Id));
+                Children.Add(new Tournaments_RoundInfo("Rd " + round.Number, round.Id));
             }
 
             //Remove option to delete round if there are no rounds
@@ -86,7 +105,15 @@ namespace TournamentTest.Pages.Tournaments
         //Open add player popup
         void addPlayers()
         {
+            playersListView_SearchBar.Text = "";
             addPlayersPopup.IsVisible = true;        
+        }
+
+        //Close add player popup
+        void closePlayers()
+        {
+            addPlayersPopup.IsVisible = false;
+            OnAppearing();  //Refresh page so that the popup has all the correct players selected and set
         }
 
 
@@ -95,8 +122,7 @@ namespace TournamentTest.Pages.Tournaments
         {
             if (addPlayersPopup.IsVisible)
             {
-                addPlayersPopup.IsVisible = false;
-                OnAppearing();  //Refresh page so that the popup has all the correct players selected and set
+                closePlayers();
                 return true;    //Prevent back button from continuing
             }
             else
@@ -105,61 +131,10 @@ namespace TournamentTest.Pages.Tournaments
             }
         }
 
-        //Save player popup
-        private void addPlayers_Button_Clicked(object sender, EventArgs e)
-        {
-
-            objTournMain.Players.Clear();
-
-            foreach (int ID in lstPlayerIds)
-            {
-                TournamentMainPlayer tournamentPlayer = new TournamentMainPlayer();
-
-                tournamentPlayer.TournmentId = intTournID;
-                tournamentPlayer.PlayerId = ID;
-                tournamentPlayer.Active = true;
-                objTournMain.Players.Add(tournamentPlayer);
-            }
-
-            using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
-            {
-                Utilities.InitializeTournamentMain(conn);
-
-                conn.DeleteAll(objTournMain.Players);
-
-                try
-                {
-                    conn.InsertOrReplaceWithChildren(objTournMain);
-                    UpdatePlayerList(conn);
-                }
-                catch
-                {
-                    DisplayAlert("Warning!", "Error adding players to tournament!", "OK");
-                }
-
-            }
-
-            addPlayersPopup.IsVisible = false;
-        }
-
-
-        //Track which players are to be added/removed
-        private void SwitchCell_OnChanged(SwitchCell sender, ToggledEventArgs e)
-        {
-            int intPlayerID = Convert.ToInt32(sender.ClassId);
-            if (sender.On)
-            {
-                if (!lstPlayerIds.Contains(intPlayerID)) lstPlayerIds.Add(intPlayerID);
-            }
-            else
-            {
-                if (lstPlayerIds.Contains(intPlayerID)) lstPlayerIds.Remove(intPlayerID);
-            }
-        }
 
         private void UpdatePlayerList(SQLite.SQLiteConnection conn)
         {
-            List<Player> lstActivePlayers = conn.Query<Player>("SELECT * FROM Player WHERE Id IN (" + objTournMain.PlayersList() + ")");
+            List<Player> lstActivePlayers = conn.Query<Player>("SELECT * FROM Player WHERE Id IN (" + objTournMain.ActivePlayersList() + ")");
             activePlayersListView.ItemsSource = lstActivePlayers;
         }
 
@@ -171,6 +146,8 @@ namespace TournamentTest.Pages.Tournaments
             Navigation.PushAsync(new Tournaments_AddEdit(intTournID));
         }
 
+
+        //Start next round
         private void startRoundBtn_ToolbarItem_Activated(object sender, EventArgs e)
         {
             if (objTournMain.Players.Count == 0)
@@ -188,11 +165,8 @@ namespace TournamentTest.Pages.Tournaments
                 {
                     if (player.Active)
                     {
-                        TournamentMainRoundPlayer roundPlayer = new TournamentMainRoundPlayer
-                        {
-                            PlayerId = player.PlayerId,
-                            Active = true
-                        };
+                        TournamentMainRoundPlayer roundPlayer = new TournamentMainRoundPlayer();
+                        roundPlayer.PlayerId = player.PlayerId;
                         lstActiveTournamentPlayers.Add(roundPlayer);
                     }
                 }
@@ -219,7 +193,7 @@ namespace TournamentTest.Pages.Tournaments
                 {     
                     if (roundTable.Player1Id != 0 && roundTable.Player2Id != 0)
                     {
-                        setRoundTableName(ref roundTable);
+                        setRoundTableNames(ref roundTable);
                         round.Tables.Add(roundTable);
                         roundTable = new TournamentMainRoundTable();
                     }
@@ -235,14 +209,13 @@ namespace TournamentTest.Pages.Tournaments
                     }
                 }
 
-                setRoundTableName(ref roundTable);
+                setRoundTableNames(ref roundTable);
                 round.Tables.Add(roundTable);
 
 
                 //Add/Save the round
                 using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
                 {
-                    Utilities.InitializeTournamentMain(conn);
                     try
                     {
                         conn.InsertWithChildren(round, true);
@@ -257,12 +230,11 @@ namespace TournamentTest.Pages.Tournaments
             }
         }
 
-        private void setRoundTableName(ref TournamentMainRoundTable roundTable)
+        private void setRoundTableNames(ref TournamentMainRoundTable roundTable)
         {
             using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
             {
 
-                conn.CreateTable<Player>();
                 Player player;
 
                 string strPlayer1Name = "N/A";
@@ -296,8 +268,6 @@ namespace TournamentTest.Pages.Tournaments
                 using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
                 {
 
-                    Utilities.InitializeTournamentMain(conn);
-
                     try
                     {
                         //Grab the latest round and delete it
@@ -312,6 +282,23 @@ namespace TournamentTest.Pages.Tournaments
                     OnAppearing();
                 }
             }
+        }
+
+        private void SearchBar_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            playersListView.BeginRefresh();
+
+            if (string.IsNullOrWhiteSpace(e.NewTextValue))
+            {
+                playersListView.ItemsSource = lstViewPlayers;
+            }
+            else
+            {
+                playersListView.ItemsSource = lstViewPlayers.Where(i => i.TournamentMainPlayer.PlayerName.Contains(e.NewTextValue));
+            }
+
+            playersListView.EndRefresh();
+
         }
     }
 }
