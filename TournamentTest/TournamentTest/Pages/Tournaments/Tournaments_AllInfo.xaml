@@ -6,6 +6,11 @@
 
     <TabbedPage.ToolbarItems>
 
+        <ToolbarItem Text="Current Standings"
+                     Order="Secondary"
+                     x:Name="currentStandingsBtn"
+                     Activated="currentStandingsBtn_Activated" />
+        
         <ToolbarItem Text="Edit Tournament"
                      Order="Secondary"
                      x:Name="editTournmentBtn"
@@ -16,7 +21,7 @@
                      Activated="startRoundBtn_ToolbarItem_Activated"
                      x:Name="startRoundBtn" />
 
-        <ToolbarItem Text="Delete Latest Round"
+        <ToolbarItem Text="Delete Last Round"
                      Order="Secondary"
                      Activated="deleteRoundBtn_Activated"
                      x:Name="deleteRoundBtn" />

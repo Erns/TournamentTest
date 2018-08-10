@@ -83,9 +83,7 @@ namespace TournamentTest.Pages.Tournaments
             for (int index = this.Children.Count - 1; index > 0; index--)
             {
                 if (index > 0)
-                {
                     this.Children.RemoveAt(index);
-                }
             }
 
             //Add each round as tabs
@@ -102,11 +100,50 @@ namespace TournamentTest.Pages.Tournaments
 
         }
 
+
+        #region 'Page-specific utilities'
+        private void UpdatePlayerList(SQLite.SQLiteConnection conn)
+        {
+            List<Player> lstActivePlayers = conn.Query<Player>("SELECT * FROM Player WHERE Id IN (" + objTournMain.ActivePlayersList() + ")");
+            activePlayersListView.ItemsSource = lstActivePlayers;
+        }
+
+        private void setRoundTableNames(ref TournamentMainRoundTable roundTable)
+        {
+            using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
+            {
+
+                Player player;
+
+                string strPlayer1Name = "N/A";
+                string strPlayer2Name = "N/A";
+
+                if (roundTable.Player1Id > 0)
+                {
+                    player = conn.Get<Player>(roundTable.Player1Id);
+                    strPlayer1Name = player.Name;
+                }
+
+                if (roundTable.Player2Id > 0)
+                {
+                    player = conn.Get<Player>(roundTable.Player2Id);
+                    strPlayer2Name = player.Name;
+                }
+
+                roundTable.Player1Name = strPlayer1Name;
+                roundTable.Player2Name = strPlayer2Name;
+                roundTable.TableName = string.Format("{0} vs {1}", strPlayer1Name, strPlayer2Name);
+            }
+        }
+        #endregion
+
+        #region 'Add Players Popup'
+
         //Open add player popup
         void addPlayers()
         {
             playersListView_SearchBar.Text = "";
-            addPlayersPopup.IsVisible = true;        
+            addPlayersPopup.IsVisible = true;
         }
 
         //Close add player popup
@@ -144,15 +181,9 @@ namespace TournamentTest.Pages.Tournaments
             playersListView.EndRefresh();
 
         }
+        #endregion
 
-
-        private void UpdatePlayerList(SQLite.SQLiteConnection conn)
-        {
-            List<Player> lstActivePlayers = conn.Query<Player>("SELECT * FROM Player WHERE Id IN (" + objTournMain.ActivePlayersList() + ")");
-            activePlayersListView.ItemsSource = lstActivePlayers;
-        }
-
-
+        #region 'Buttons'
 
         //Secondary toolbar items
         private void editTournmentBtn_Activated(object sender, EventArgs e)
@@ -190,7 +221,8 @@ namespace TournamentTest.Pages.Tournaments
             }
 
             //Grab list of currently active players in the tournament
-            Dictionary<int, List<TournamentMainPlayer>> dctActiveTournamentPlayers = new Dictionary<int, List<TournamentMainPlayer>>();
+            Dictionary<int, List<TournamentMainPlayer>> dctActiveTournamentPlayerScores = new Dictionary<int, List<TournamentMainPlayer>>();
+
             List<TournamentMainPlayer> lstActiveTournamentPlayers = new List<TournamentMainPlayer>();
             List<TournamentMainPlayer> lstActiveTournamentPlayers_Byes = new List<TournamentMainPlayer>();
 
@@ -226,6 +258,34 @@ namespace TournamentTest.Pages.Tournaments
             else
             {
                 //Subsequent rounds, group up players with same win count as much as possible and randomize 
+                dctActiveTournamentPlayerScores = new Dictionary<int, List<TournamentMainPlayer>>();
+                for (int i = objTournMain.Rounds.Count; i >= 0; i--)
+                {
+                    dctActiveTournamentPlayerScores.Add(i, new List<TournamentMainPlayer>());
+                    foreach (TournamentMainPlayer activePlayer in lstActiveTournamentPlayers)
+                    {
+                        if (i == activePlayer.Score)
+                        {
+                            dctActiveTournamentPlayerScores[i].Add(activePlayer);
+                        }
+                    }
+
+                    dctActiveTournamentPlayerScores[i].Shuffle(); //Shuffle all the players in each win bracket
+                }
+
+                //Clear out the active list, then go down the list and re-add them back in.
+                lstActiveTournamentPlayers.Clear();
+                for (int i = objTournMain.Rounds.Count; i >= 0; i--)
+                {
+                    if (dctActiveTournamentPlayerScores.ContainsKey(i))
+                    {
+                        foreach (TournamentMainPlayer activePlayer in dctActiveTournamentPlayerScores[i])
+                        {
+                            lstActiveTournamentPlayers.Add(activePlayer);
+                        }
+                    }
+                }
+
             }
 
             //Create each table, pair 'em up
@@ -277,7 +337,7 @@ namespace TournamentTest.Pages.Tournaments
                     setRoundTableNames(ref roundTable);
                     round.Tables.Add(roundTable);
                 }
-            }           
+            }
 
             //Add/Save the round
             using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
@@ -295,33 +355,13 @@ namespace TournamentTest.Pages.Tournaments
             }
         }
 
-        private void setRoundTableNames(ref TournamentMainRoundTable roundTable)
+        //Show Standings
+        private void currentStandingsBtn_Activated(object sender, EventArgs e)
         {
-            using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
-            {
-
-                Player player;
-
-                string strPlayer1Name = "N/A";
-                string strPlayer2Name = "N/A";
-
-                if (roundTable.Player1Id > 0)
-                {
-                    player = conn.Get<Player>(roundTable.Player1Id);
-                    strPlayer1Name = player.Name;
-                }
-
-                if (roundTable.Player2Id > 0)
-                {
-                    player = conn.Get<Player>(roundTable.Player2Id);
-                    strPlayer2Name = player.Name;
-                }
-
-                roundTable.Player1Name = strPlayer1Name;
-                roundTable.Player2Name = strPlayer2Name;
-                roundTable.TableName = string.Format("{0} vs {1}", strPlayer1Name, strPlayer2Name);
-            }
+            Navigation.PushAsync(new Tournaments_Standings(intTournID));
         }
+
+
 
         //Delete the last round
         async private void deleteRoundBtn_Activated(object sender, EventArgs e)
@@ -348,6 +388,7 @@ namespace TournamentTest.Pages.Tournaments
                 }
             }
         }
+        #endregion
 
     }
 }

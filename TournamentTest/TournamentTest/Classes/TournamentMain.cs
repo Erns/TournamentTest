@@ -50,9 +50,10 @@ namespace TournamentTest.Classes
         public bool Bye { get; set; } = false;
 
         public int RoundsPlayed { get; set; }
+        public int Rank { get; set; }
         public int Score { get; set; }
         public int MOV { get; set; }
-        public int SOS { get; set; }
+        public decimal SOS { get; set; }
 
     }
 
@@ -66,8 +67,8 @@ namespace TournamentTest.Classes
 
         public int Number { get; set; }
 
-        //[OneToMany(CascadeOperations = CascadeOperation.All)]
-        //public List<TournamentMainRoundPlayer> Players { get; set; } = new List<TournamentMainRoundPlayer>();
+        [OneToMany(CascadeOperations = CascadeOperation.All)]
+        public List<TournamentMainRoundPlayer> Players { get; set; } = new List<TournamentMainRoundPlayer>();
 
         [OneToMany(CascadeOperations = CascadeOperation.All)]
         public List<TournamentMainRoundTable> Tables { get; set; } = new List<TournamentMainRoundTable>();
@@ -77,17 +78,17 @@ namespace TournamentTest.Classes
 
     }
 
-    //public class TournamentMainRoundPlayer
-    //{
-    //    [PrimaryKey, AutoIncrement]
-    //    public int Id { get; set; }
+    public class TournamentMainRoundPlayer
+    {
+        [PrimaryKey, AutoIncrement]
+        public int Id { get; set; }
 
-    //    [ForeignKey(typeof(TournamentMainRound))]
-    //    public int RoundId { get; set; }
+        [ForeignKey(typeof(TournamentMainRound))]
+        public int RoundId { get; set; }
 
-    //    [ForeignKey(typeof(Player))]
-    //    public int PlayerId { get; set; }
-    //}
+        [ForeignKey(typeof(Player))]
+        public int PlayerId { get; set; }
+    }
 
 
     public class TournamentMainRoundTable

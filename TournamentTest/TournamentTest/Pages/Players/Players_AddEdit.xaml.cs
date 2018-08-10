@@ -79,8 +79,10 @@ namespace TournamentTest.Pages.Players
                 else
                 {
                     numberOfRows = conn.Insert(player);
-                    if (numberOfRows > 0) DisplayAlert("Success", "Player successfully created", "Great!");
-                    else DisplayAlert("Failure", "Player failed to be created", "Oops!");
+                    //if (numberOfRows > 0) DisplayAlert("Success", "Player successfully created", "Great!");
+                    //else DisplayAlert("Failure", "Player failed to be created", "Oops!");
+
+                    if (numberOfRows == 0) DisplayAlert("Failure", "Player failed to be created", "Oops!");
 
                 }
 
