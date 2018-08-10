@@ -3,15 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:TournamentTest.Classes"
              x:Class="TournamentTest.Pages.Tournaments.Tournaments_RoundInfo">
+
     <ContentPage.Content>
         <Grid Padding="10">
-
             <ListView x:Name="tournamentTableListView" HasUnevenRows="True" SelectionMode="None">
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+                            <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" IsEnabled="{Binding TableByeEnabled_VM}">
                                 <Grid HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
 
                                     <Grid.RowDefinitions>

@@ -91,7 +91,7 @@ namespace TournamentTest.Pages.Tournaments
             //Add each round as tabs
             foreach (TournamentMainRound round in objTournMain.Rounds)
             {
-                Children.Add(new Tournaments_RoundInfo("Rd " + round.Number, round.Id));
+                Children.Add(new Tournaments_RoundInfo("Rd " + round.Number, round.Id, objTournMain.Rounds.Count));
             }
 
             //Remove option to delete round if there are no rounds
@@ -131,6 +131,20 @@ namespace TournamentTest.Pages.Tournaments
             }
         }
 
+        //Players search bar
+        private void SearchBar_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            playersListView.BeginRefresh();
+
+            if (string.IsNullOrWhiteSpace(e.NewTextValue))
+                playersListView.ItemsSource = lstViewPlayers;
+            else
+                playersListView.ItemsSource = lstViewPlayers.Where(i => i.TournamentMainPlayer.PlayerName.Contains(e.NewTextValue));
+
+            playersListView.EndRefresh();
+
+        }
+
 
         private void UpdatePlayerList(SQLite.SQLiteConnection conn)
         {
@@ -150,83 +164,134 @@ namespace TournamentTest.Pages.Tournaments
         //Start next round
         private void startRoundBtn_ToolbarItem_Activated(object sender, EventArgs e)
         {
+            //Make sure we actually have players
             if (objTournMain.Players.Count == 0)
             {
                 DisplayAlert("Warning!", "You must add players first to this tournament!", "D'oh!");
                 return;
             }
 
-            //How to proceed when no rounds have started (Will likely reuse much/most/all for subsequent rounds, but just to start)
+            //Housekeeping with the latest round
+            if (objTournMain.Rounds.Count > 0)
+            {
+                TournamentMainRound latestRound = objTournMain.Rounds[objTournMain.Rounds.Count - 1];
+
+                //Before starting a new round, make sure we're not missing any scores
+                foreach (TournamentMainRoundTable table in latestRound.Tables)
+                {
+                    if (!table.Player1Winner && !table.Player2Winner)
+                    {
+                        DisplayAlert("Warning!", "Verify that all tables are completed for the current round!", "D'oh!");
+                        return;
+                    }
+                }
+
+                Utilities.CalculatePlayerScores(ref objTournMain);
+            }
+
+            //Grab list of currently active players in the tournament
+            Dictionary<int, List<TournamentMainPlayer>> dctActiveTournamentPlayers = new Dictionary<int, List<TournamentMainPlayer>>();
+            List<TournamentMainPlayer> lstActiveTournamentPlayers = new List<TournamentMainPlayer>();
+            List<TournamentMainPlayer> lstActiveTournamentPlayers_Byes = new List<TournamentMainPlayer>();
+
+            foreach (TournamentMainPlayer player in objTournMain.Players)
+            {
+                if (player.Active)
+                {
+                    TournamentMainPlayer roundPlayer = new TournamentMainPlayer();
+                    roundPlayer.PlayerId = player.PlayerId;
+
+                    if (!player.Bye)
+                        lstActiveTournamentPlayers.Add(roundPlayer);
+                    else
+                    {
+                        lstActiveTournamentPlayers_Byes.Add(roundPlayer);
+                        player.Bye = false;  //No longer has a Bye for the next round
+                    }
+                }
+            }
+
+            //Create a new round
+            TournamentMainRound round = new TournamentMainRound();
+            round.TournmentId = intTournID;
+            round.Number = objTournMain.Rounds.Count + 1;
+            //round.Players.AddRange(lstActiveTournamentPlayers);
+            //round.Players.AddRange(lstActiveTournamentPlayers_Byes);
+
             if (objTournMain.Rounds.Count == 0)
             {
-                //Grab list of currently active players in the tournament
-                List<TournamentMainRoundPlayer> lstActiveTournamentPlayers = new List<TournamentMainRoundPlayer>();
-                foreach(TournamentMainPlayer player in objTournMain.Players)
+                //First round, completely random player pairings
+                lstActiveTournamentPlayers.Shuffle();
+            }
+            else
+            {
+                //Subsequent rounds, group up players with same win count as much as possible and randomize 
+            }
+
+            //Create each table, pair 'em up
+            TournamentMainRoundTable roundTable = new TournamentMainRoundTable();
+            foreach (TournamentMainPlayer player in lstActiveTournamentPlayers)
+            {
+                if (roundTable.Player1Id != 0 && roundTable.Player2Id != 0)
                 {
-                    if (player.Active)
-                    {
-                        TournamentMainRoundPlayer roundPlayer = new TournamentMainRoundPlayer();
-                        roundPlayer.PlayerId = player.PlayerId;
-                        lstActiveTournamentPlayers.Add(roundPlayer);
-                    }
+                    setRoundTableNames(ref roundTable);
+                    round.Tables.Add(roundTable);
+                    roundTable = new TournamentMainRoundTable();
                 }
 
-                //Create a new round
-                TournamentMainRound round = new TournamentMainRound();
-                round.TournmentId = intTournID;
-                round.Number = objTournMain.Rounds.Count + 1;
-                round.Players.AddRange(lstActiveTournamentPlayers);
-
-                if (objTournMain.Rounds.Count == 0)
+                if (roundTable.Player1Id == 0)
                 {
-                    //First round, completely random player pairings
-                    lstActiveTournamentPlayers.Shuffle();
+                    roundTable.Number = round.Tables.Count + 1;
+                    roundTable.Player1Id = player.PlayerId;
                 }
-                else
+                else if (roundTable.Player2Id == 0)
                 {
-
+                    roundTable.Player2Id = player.PlayerId;
                 }
+            }
 
-                //Create each table, pair 'em up
-                TournamentMainRoundTable roundTable = new TournamentMainRoundTable();
-                foreach (TournamentMainRoundPlayer player in lstActiveTournamentPlayers)
-                {     
-                    if (roundTable.Player1Id != 0 && roundTable.Player2Id != 0)
-                    {
-                        setRoundTableNames(ref roundTable);
-                        round.Tables.Add(roundTable);
-                        roundTable = new TournamentMainRoundTable();
-                    }
-                    
-                    if (roundTable.Player1Id == 0)
-                    {
-                        roundTable.Number = round.Tables.Count + 1;
-                        roundTable.Player1Id = player.PlayerId;
-                    }
-                    else if (roundTable.Player2Id == 0)
-                    {
-                        roundTable.Player2Id = player.PlayerId;
-                    }
-                }
+            //If the last table of non-manual byes is an odd-man, set table/player as a bye
+            if (roundTable.Player2Id == 0)
+            {
+                roundTable.Bye = true;
+                roundTable.Player1Score = objTournMain.MaxPoints / 2;
+                roundTable.Player1Winner = true;
+            }
 
-                setRoundTableNames(ref roundTable);
-                round.Tables.Add(roundTable);
+            setRoundTableNames(ref roundTable);
+            round.Tables.Add(roundTable);
 
 
-                //Add/Save the round
-                using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
+            //If a manual bye (such as first-round byes at a tournament), add these players now
+            if (lstActiveTournamentPlayers_Byes.Count > 0)
+            {
+                lstActiveTournamentPlayers_Byes.Shuffle();
+                foreach (TournamentMainPlayer player in lstActiveTournamentPlayers_Byes)
                 {
-                    try
-                    {
-                        conn.InsertWithChildren(round, true);
-                    }
-                    catch(Exception ex)
-                    {
-                        DisplayAlert("Warning!", "Error adding round to tournament! " + ex.Message, "OK");
-                    }
-
-                    OnAppearing();
+                    roundTable = new TournamentMainRoundTable();
+                    roundTable.Number = round.Tables.Count + 1;
+                    roundTable.Player1Id = player.PlayerId;
+                    roundTable.Bye = true;
+                    roundTable.Player1Score = objTournMain.MaxPoints / 2;
+                    roundTable.Player1Winner = true;
+                    setRoundTableNames(ref roundTable);
+                    round.Tables.Add(roundTable);
                 }
+            }           
+
+            //Add/Save the round
+            using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
+            {
+                try
+                {
+                    conn.InsertWithChildren(round, true);
+                }
+                catch (Exception ex)
+                {
+                    DisplayAlert("Warning!", "Error adding round to tournament! " + ex.Message, "OK");
+                }
+
+                OnAppearing();
             }
         }
 
@@ -284,21 +349,5 @@ namespace TournamentTest.Pages.Tournaments
             }
         }
 
-        private void SearchBar_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            playersListView.BeginRefresh();
-
-            if (string.IsNullOrWhiteSpace(e.NewTextValue))
-            {
-                playersListView.ItemsSource = lstViewPlayers;
-            }
-            else
-            {
-                playersListView.ItemsSource = lstViewPlayers.Where(i => i.TournamentMainPlayer.PlayerName.Contains(e.NewTextValue));
-            }
-
-            playersListView.EndRefresh();
-
-        }
     }
 }

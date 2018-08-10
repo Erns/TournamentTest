@@ -36,7 +36,8 @@ namespace TournamentTest.Pages.Tournaments
 
                 nameEntry.Text = openTournament.Name;
                 pointMaxEntry.Text = openTournament.MaxPoints.ToString();
-                dateEntry.Date = openTournament.StartDate;        
+                dateEntry.Date = openTournament.StartDate;
+                minutesEntry.Text = openTournament.RoundTimeLength.ToString();
             }
         }
         
@@ -46,7 +47,8 @@ namespace TournamentTest.Pages.Tournaments
 
             openTournament.Name = nameEntry.Text;
             openTournament.StartDate = dateEntry.Date;
-            openTournament.MaxPoints = Convert.ToInt32(Math.Round(Convert.ToDecimal(pointMaxEntry.Text)));
+            if (!string.IsNullOrWhiteSpace(pointMaxEntry.Text)) openTournament.MaxPoints = Convert.ToInt32(Math.Round(Convert.ToDecimal(pointMaxEntry.Text)));
+            if (!string.IsNullOrWhiteSpace(minutesEntry.Text)) openTournament.RoundTimeLength = Convert.ToInt32(Math.Round(Convert.ToDecimal(minutesEntry.Text)));
 
             //Check Name
             if (openTournament.Name == null || openTournament.Name.ToString().Trim() == "")
@@ -55,10 +57,17 @@ namespace TournamentTest.Pages.Tournaments
                 return;
             }
 
-            //Check Name
+            //Check points
             if (openTournament.MaxPoints <= 0)
             {
                 DisplayAlert("Warning!", "Please enter a valid point number!", "OK");
+                return;
+            }
+
+            //Check time
+            if (openTournament.RoundTimeLength <= 0)
+            {
+                DisplayAlert("Warning!", "Please enter a valid round length!", "OK");
                 return;
             }
 

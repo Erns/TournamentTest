@@ -13,6 +13,7 @@ namespace TournamentTest.Classes
         public string Name { get; set; }
         public DateTime StartDate { get; set; }
         public int MaxPoints { get; set; }
+        public int RoundTimeLength { get; set; }
         public Nullable<DateTime> DateDeleted { get; set; } = null;
 
         [OneToMany(CascadeOperations = CascadeOperation.All)]
@@ -47,8 +48,11 @@ namespace TournamentTest.Classes
         public string PlayerName { get; set; }
         public bool Active { get; set; } = true;
         public bool Bye { get; set; } = false;
+
+        public int RoundsPlayed { get; set; }
         public int Score { get; set; }
         public int MOV { get; set; }
+        public int SOS { get; set; }
 
     }
 
@@ -62,8 +66,8 @@ namespace TournamentTest.Classes
 
         public int Number { get; set; }
 
-        [OneToMany(CascadeOperations = CascadeOperation.All)]
-        public List<TournamentMainRoundPlayer> Players { get; set; } = new List<TournamentMainRoundPlayer>();
+        //[OneToMany(CascadeOperations = CascadeOperation.All)]
+        //public List<TournamentMainRoundPlayer> Players { get; set; } = new List<TournamentMainRoundPlayer>();
 
         [OneToMany(CascadeOperations = CascadeOperation.All)]
         public List<TournamentMainRoundTable> Tables { get; set; } = new List<TournamentMainRoundTable>();
@@ -73,17 +77,17 @@ namespace TournamentTest.Classes
 
     }
 
-    public class TournamentMainRoundPlayer
-    {
-        [PrimaryKey, AutoIncrement]
-        public int Id { get; set; }
+    //public class TournamentMainRoundPlayer
+    //{
+    //    [PrimaryKey, AutoIncrement]
+    //    public int Id { get; set; }
 
-        [ForeignKey(typeof(TournamentMainRound))]
-        public int RoundId { get; set; }
+    //    [ForeignKey(typeof(TournamentMainRound))]
+    //    public int RoundId { get; set; }
 
-        [ForeignKey(typeof(Player))]
-        public int PlayerId { get; set; }
-    }
+    //    [ForeignKey(typeof(Player))]
+    //    public int PlayerId { get; set; }
+    //}
 
 
     public class TournamentMainRoundTable

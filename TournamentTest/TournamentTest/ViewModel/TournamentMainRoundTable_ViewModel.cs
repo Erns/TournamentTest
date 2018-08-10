@@ -156,6 +156,13 @@ namespace TournamentTest.ViewModel
             }
         }
 
+
+        //Indicate if table should be active for edit, per Bye
+        public bool TableByeEnabled_VM
+        {
+            get { return !TournamentMainRoundTable.Bye; }
+        }
+
         //Update the visuals for winner/loser
         private void UpdatePlayerVisual()
         {

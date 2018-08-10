@@ -18,7 +18,7 @@ namespace TournamentTest.Pages.Tournaments
 
         private int intRoundId = 0;
 
-        public Tournaments_RoundInfo (string strTitle, int intRoundId)
+        public Tournaments_RoundInfo (string strTitle, int intRoundId, int intRoundCount)
 		{
 			InitializeComponent ();
             Title = strTitle;
@@ -37,6 +37,10 @@ namespace TournamentTest.Pages.Tournaments
                     lstTables.Add(new TournamentMainRoundTable_ViewModel(table));
                 }
                 tournamentTableListView.ItemsSource = lstTables;
+
+                //Previous rounds have been locked in, don't allow for editing
+                if (round.Number < intRoundCount) tournamentTableListView.IsEnabled = false;
+                else tournamentTableListView.IsEnabled = true;
             }
         }
     }
