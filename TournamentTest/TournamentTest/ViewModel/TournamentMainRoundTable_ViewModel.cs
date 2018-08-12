@@ -11,6 +11,8 @@ namespace TournamentTest.ViewModel
     class TournamentMainRoundTable_ViewModel : INotifyPropertyChanged
     {
 
+        private bool _enabled;
+
         //Helps facilitate the GUI updating as needed
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -31,8 +33,9 @@ namespace TournamentTest.ViewModel
         }
 
         //Set the copy of the table
-        public TournamentMainRoundTable_ViewModel(TournamentMainRoundTable table)
+        public TournamentMainRoundTable_ViewModel(TournamentMainRoundTable table, bool enabled = true)
         {
+            _enabled = enabled;
             TournamentMainRoundTable = new TournamentMainRoundTable();
             TournamentMainRoundTable = table;
             UpdatePlayerVisual();
@@ -158,9 +161,15 @@ namespace TournamentTest.ViewModel
 
 
         //Indicate if table should be active for edit, per Bye
-        public bool TableByeEnabled_VM
+        public bool TableRowEnabled_VM
         {
-            get { return !TournamentMainRoundTable.Bye; }
+            get
+            {
+                if (!_enabled)
+                    return false;
+                else 
+                    return !TournamentMainRoundTable.Bye;
+            }
         }
 
         //Update the visuals for winner/loser

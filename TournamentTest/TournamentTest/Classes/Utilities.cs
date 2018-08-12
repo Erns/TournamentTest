@@ -13,7 +13,7 @@ namespace TournamentTest.Classes
             conn.CreateTable<TournamentMain>();
             conn.CreateTable<TournamentMainPlayer>();
             conn.CreateTable<TournamentMainRound>();
-            conn.CreateTable<TournamentMainRoundPlayer>();
+            //conn.CreateTable<TournamentMainRoundPlayer>();
             conn.CreateTable<TournamentMainRoundTable>();
 
             conn.CreateTable<Player>();

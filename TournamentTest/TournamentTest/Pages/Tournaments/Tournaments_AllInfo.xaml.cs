@@ -205,6 +205,14 @@ namespace TournamentTest.Pages.Tournaments
             //Housekeeping with the latest round
             if (objTournMain.Rounds.Count > 0)
             {
+
+                //Grab the latest information before checking the scores and calculating them
+                using (SQLite.SQLiteConnection conn = new SQLite.SQLiteConnection(App.DB_PATH))
+                {
+                    objTournMain = new TournamentMain();
+                    objTournMain = conn.GetWithChildren<TournamentMain>(intTournID, true);
+                }
+
                 TournamentMainRound latestRound = objTournMain.Rounds[objTournMain.Rounds.Count - 1];
 
                 //Before starting a new round, make sure we're not missing any scores
@@ -239,16 +247,17 @@ namespace TournamentTest.Pages.Tournaments
                     {
                         lstActiveTournamentPlayers_Byes.Add(roundPlayer);
                         player.Bye = false;  //No longer has a Bye for the next round
+                        player.ByeCount++;
                     }
                 }
             }
+
+            
 
             //Create a new round
             TournamentMainRound round = new TournamentMainRound();
             round.TournmentId = intTournID;
             round.Number = objTournMain.Rounds.Count + 1;
-            //round.Players.AddRange(lstActiveTournamentPlayers);
-            //round.Players.AddRange(lstActiveTournamentPlayers_Byes);
 
             if (objTournMain.Rounds.Count == 0)
             {
@@ -286,6 +295,28 @@ namespace TournamentTest.Pages.Tournaments
                     }
                 }
 
+                //If odd number of players, the last in the list will get a Bye
+                //Get the lowest ranked player that hasn't had a bye already
+                if (lstActiveTournamentPlayers.Count % 2 != 0)
+                {                   
+                    foreach(TournamentMainPlayer player in objTournMain.Players.OrderByDescending(obj => obj.Rank).ToList())
+                    {
+                        if (player.ByeCount == 0)
+                        {
+                            for (int i = lstActiveTournamentPlayers.Count - 1; i > 0; i--)
+                            {
+                                if (lstActiveTournamentPlayers[i].PlayerId == player.PlayerId)
+                                {
+                                    TournamentMainPlayer roundPlayer = lstActiveTournamentPlayers[i];
+                                    lstActiveTournamentPlayers.RemoveAt(i);
+                                    lstActiveTournamentPlayers.Add(roundPlayer);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
             }
 
             //Create each table, pair 'em up
@@ -316,6 +347,15 @@ namespace TournamentTest.Pages.Tournaments
                 roundTable.Bye = true;
                 roundTable.Player1Score = objTournMain.MaxPoints / 2;
                 roundTable.Player1Winner = true;
+
+                foreach (TournamentMainPlayer player in objTournMain.Players)
+                {
+                    if (player.Id == roundTable.Player2Id)
+                    {
+                        player.ByeCount++;
+                        break;
+                    }                    
+                }
             }
 
             setRoundTableNames(ref roundTable);
@@ -344,6 +384,7 @@ namespace TournamentTest.Pages.Tournaments
             {
                 try
                 {
+                    conn.Update(objTournMain); //Update any other information that was saved such as Bye counts and such
                     conn.InsertWithChildren(round, true);
                 }
                 catch (Exception ex)

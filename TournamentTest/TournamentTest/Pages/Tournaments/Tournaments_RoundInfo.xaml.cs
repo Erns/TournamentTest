@@ -17,6 +17,7 @@ namespace TournamentTest.Pages.Tournaments
 	{
 
         private int intRoundId = 0;
+        static double dblScrollY = 0;
 
         public Tournaments_RoundInfo (string strTitle, int intRoundId, int intRoundCount)
 		{
@@ -29,19 +30,40 @@ namespace TournamentTest.Pages.Tournaments
                 TournamentMainRound round = new TournamentMainRound();
                 round = conn.GetWithChildren<TournamentMainRound>(intRoundId);
 
+                bool blnEnableRows = (round.Number < intRoundCount ? false : true);
+
                 //Set using the ViewModel version.  This allows being able to manipulate back and forth across the class properties, while displaying as intended on the GUI
                 //while also ensuring none of the goings ons of the properties touching each other don't occur without this specific view model (such as the SQL table updates)
                 ObservableCollection<TournamentMainRoundTable_ViewModel> lstTables = new ObservableCollection<TournamentMainRoundTable_ViewModel>();
                 foreach (TournamentMainRoundTable table in round.Tables)
                 {
-                    lstTables.Add(new TournamentMainRoundTable_ViewModel(table));
+                    lstTables.Add(new TournamentMainRoundTable_ViewModel(table, blnEnableRows));
                 }
                 tournamentTableListView.ItemsSource = lstTables;
 
-                //Previous rounds have been locked in, don't allow for editing
-                if (round.Number < intRoundCount) tournamentTableListView.IsEnabled = false;
-                else tournamentTableListView.IsEnabled = true;
+                if (!blnEnableRows) timerRoundBtn.IsVisible = false;
+                else timerRoundBtn.IsVisible = true;
             }
+        }
+
+        //Show/Hide button when scrolling up/down
+        private void tournamentTableListView_Scrolled(object sender, ScrolledEventArgs e)
+        {
+            if (e.ScrollY > dblScrollY)
+            {
+                timerRoundBtn.TranslateTo(0, 200, 200);             
+            }
+            else if (e.ScrollY == 0 || e.ScrollY < dblScrollY)
+            {
+                timerRoundBtn.TranslateTo(0, 0, 200);
+            }
+
+            dblScrollY = e.ScrollY;
+        }
+
+        private void tournamentTableListView_ItemTapped(object sender, ItemTappedEventArgs e)
+        {
+            DisplayAlert("oy!", "yeah, you there", "oy?");
         }
     }
 }

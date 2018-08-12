@@ -92,6 +92,7 @@
     <Compile Include="LabelShadowEffect.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="Renderers\ListViewRenderer.cs" />
     <None Include="Entitlements.plist" />
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -163,4 +164,5 @@
       <Name>TournamentTest</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
 </Project>

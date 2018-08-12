@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="LabelShadowEffect.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="Renderers\ListViewRenderer.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

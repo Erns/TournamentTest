@@ -2,17 +2,18 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:TournamentTest.Classes"
+             xmlns:Views="clr-namespace:TournamentTest.Views"
              x:Class="TournamentTest.Pages.Tournaments.Tournaments_RoundInfo">
 
     <ContentPage.Content>
         <Grid Padding="10">
-            <ListView x:Name="tournamentTableListView" HasUnevenRows="True" SelectionMode="None">
-
-                <ListView.ItemTemplate>
+           
+            <Views:ListView x:Name="tournamentTableListView" HasUnevenRows="True" SelectionMode="None" Scrolled="tournamentTableListView_Scrolled" ItemTapped="tournamentTableListView_ItemTapped">
+                <Views:ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" IsEnabled="{Binding TableByeEnabled_VM}">
-                                <Grid HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+                            <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" IsEnabled="{Binding TableRowEnabled_VM}">
+                                <Grid x:Name="tournamentTableListViewInner" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
 
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
@@ -60,11 +61,11 @@
                         </ViewCell>
                         
                     </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                </Views:ListView.ItemTemplate>
+            </Views:ListView>
 
-
-            <Button Style="{StaticResource fabBtnStyle}" BackgroundColor="DodgerBlue">
+            
+            <Button x:Name="timerRoundBtn" Style="{StaticResource fabBtnStyle}" BackgroundColor="DodgerBlue">
                 <Button.Effects>
                     <local:ShadowEffect Radius="5" DistanceX="5" DistanceY="5">
                         <local:ShadowEffect.Color>
