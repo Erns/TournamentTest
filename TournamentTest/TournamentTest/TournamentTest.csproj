@@ -34,6 +34,9 @@
     <Compile Update="Pages\Tournaments\Tournaments_AllInfo.xaml.cs">
       <DependentUpon>Tournaments_AllInfo.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Pages\Tournaments\Tournaments_RoundInfoTableEdit.xaml.cs">
+      <DependentUpon>Tournaments_RoundInfoTableEdit.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -59,6 +62,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Pages\Tournaments\Tournaments_RoundInfo.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Pages\Tournaments\Tournaments_RoundInfoTableEdit.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Pages\Tournaments\Tournaments_Standings.xaml">

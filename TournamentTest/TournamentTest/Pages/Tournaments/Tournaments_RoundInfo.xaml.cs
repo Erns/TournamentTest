@@ -63,7 +63,10 @@ namespace TournamentTest.Pages.Tournaments
 
         private void tournamentTableListView_ItemTapped(object sender, ItemTappedEventArgs e)
         {
-            DisplayAlert("oy!", "yeah, you there", "oy?");
+            TournamentMainRoundTable_ViewModel tmp = (TournamentMainRoundTable_ViewModel)e.Item;
+
+            Navigation.PushAsync(new Tournaments_RoundInfoTableEdit(intRoundId, tmp.TournamentMainRoundTable.Id));
+
         }
     }
 }

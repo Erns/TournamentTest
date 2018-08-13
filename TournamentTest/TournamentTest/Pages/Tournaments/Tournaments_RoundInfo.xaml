@@ -8,7 +8,7 @@
     <ContentPage.Content>
         <Grid Padding="10">
            
-            <Views:ListView x:Name="tournamentTableListView" HasUnevenRows="True" SelectionMode="None" Scrolled="tournamentTableListView_Scrolled" ItemTapped="tournamentTableListView_ItemTapped">
+            <Views:ListView x:Name="tournamentTableListView" HasUnevenRows="True" SelectionMode="None" Scrolled="tournamentTableListView_Scrolled" ItemTapped="tournamentTableListView_ItemTapped" >
                 <Views:ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
