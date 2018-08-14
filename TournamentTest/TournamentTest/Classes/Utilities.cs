@@ -129,11 +129,11 @@ namespace TournamentTest.Classes
                 {
                     TournamentMainPlayer opponent = dctPlayers[opponentId];
                     if (opponent.RoundsPlayed == 0) continue;
-                    decSoS += (opponent.Score / opponent.RoundsPlayed);
+                    decSoS += Decimal.Divide(opponent.Score, opponent.RoundsPlayed);
                 }
 
                 decSoS /= player.RoundsPlayed;
-                player.SOS = Math.Round(decSoS, 4);
+                player.SOS = Math.Round(decSoS, 2);
 
             }
 

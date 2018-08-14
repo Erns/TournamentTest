@@ -240,6 +240,7 @@ namespace TournamentTest.Pages.Tournaments
                 {
                     TournamentMainPlayer roundPlayer = new TournamentMainPlayer();
                     roundPlayer.PlayerId = player.PlayerId;
+                    roundPlayer.Score = player.Score;
 
                     if (!player.Bye)
                         lstActiveTournamentPlayers.Add(roundPlayer);
