@@ -41,8 +41,15 @@ namespace TournamentTest.Pages.Tournaments
                 }
                 tournamentTableListView.ItemsSource = lstTables;
 
-                if (!blnEnableRows) timerRoundBtn.IsVisible = false;
-                else timerRoundBtn.IsVisible = true;
+                if (!blnEnableRows)
+                {
+                    timerRoundBtn.IsVisible = false;
+                    tournamentTableListView.ItemTapped -= tournamentTableListView_ItemTapped;
+                } 
+                else 
+                {
+                    timerRoundBtn.IsVisible = true;
+                }
             }
         }
 

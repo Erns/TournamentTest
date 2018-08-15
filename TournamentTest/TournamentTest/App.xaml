@@ -5,8 +5,13 @@
              x:Class="TournamentTest.App">
 	<Application.Resources>
         <ResourceDictionary>
+            <OnPlatform x:Key="FontFamilyName_R" x:TypeArguments="x:String" Android="fa-regular-400.ttf#Font Awesome 5 Free Regular" iOS="Font Awesome 5 Free" WinPhone="Assets/fa-regular-400.ttf#Font Awesome 5 Free" />
+            <OnPlatform x:Key="FontFamilyName_S" x:TypeArguments="x:String" Android="fa-solid-900.ttf#Font Awesome 5 Free Solid" iOS="Font Awesome 5 Free" WinPhone="Assets/fa-solid-900.ttf#Font Awesome 5 Free" />
+            <OnPlatform x:Key="FontFamilyName_B" x:TypeArguments="x:String" Android="fa-brands-400.ttf#Font Awesome 5 Free Brands" iOS="Font Awesome 5 Free" WinPhone="Assets/fa-brands-400.ttf#Font Awesome 5 Free" />
+
             <Style x:Key="fabBtnStyle" TargetType="Button">
-                <Setter Property="Text" Value="+"/>
+                <Setter Property="FontFamily" Value="{DynamicResource FontFamilyName_S}" />
+                <Setter Property="Text" Value="&#xf067;"/>
                 <Setter Property="BackgroundColor" Value="ForestGreen"/>
                 <Setter Property="TextColor" Value="White"/>
                 <Setter Property="FontSize" Value="Large"/>
@@ -17,7 +22,19 @@
                 <Setter Property="HorizontalOptions" Value="End"/>
             </Style>
 
-            
+            <Style x:Key="lblFontAwesome_R" TargetType="Label">
+                <Setter Property="FontFamily" Value="{DynamicResource FontFamilyName_R}" />
+            </Style>
+
+            <Style x:Key="lblFontAwesome_S" TargetType="Label">
+                <Setter Property="FontFamily" Value="{DynamicResource FontFamilyName_S}" />
+            </Style>
+
+            <Style x:Key="lblFontAwesome_B" TargetType="Label">
+                <Setter Property="FontFamily" Value="{DynamicResource FontFamilyName_B}" />
+            </Style>
+
+
             <!--<ControlTemplate x:Key="FAB_Default">
                 <Button BackgroundColor="ForestGreen"
                     TextColor="White" 

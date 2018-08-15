@@ -74,4 +74,8 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="FontAwesome5\" />
+  </ItemGroup>
 </Project>

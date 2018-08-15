@@ -22,9 +22,16 @@ namespace TournamentTest.Pages
             // Build the Menu
             MainMenuItems = new List<MainMenuItem>()
             {
-                new MainMenuItem() { Title = "Players", Icon = "menu_inbox.png", TargetType = typeof(Players_Main) },
-                new MainMenuItem() { Title = "Tournaments", Icon = "menu_stock.png", TargetType = typeof(Tournaments_Main) }
+                new MainMenuItem() { Title = "Players", Icon = "\uf0c0", TargetType = typeof(Players_Main) },
+                new MainMenuItem() { Title = "Tournaments", Icon = "\uf02d", TargetType = typeof(Tournaments_Main) }
             };
+
+
+             //new MainMenuItem() { Title = "Players", Icon = "menu_inbox.png", TargetType = typeof(Players_Main) },
+             //   new MainMenuItem() { Title = "Tournaments", Icon = "menu_stock.png", TargetType = typeof(Tournaments_Main) }
+
+            //new MainMenuItem() { Title = "Players", Icon = "&#xf0c0;", TargetType = typeof(Players_Main) },
+            //    new MainMenuItem() { Title = "Tournaments", Icon = "&#xf02d;", TargetType = typeof(Tournaments_Main) }
 
             // Set the default page, this is the "home" page.
             Detail = new NavigationPage(new Players_Main());

@@ -9,8 +9,10 @@
                 BackgroundColor="#616161">
             <!-- Menu Title background color -->
 
+            
             <!-- Slide out Menu -->
             <StackLayout VerticalOptions="FillAndExpand">
+
                 <Label 
                     Text="X-Wing Tournament" 
                     TextColor="White" 
@@ -29,10 +31,23 @@
                     <!-- Menu background color -->
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <ImageCell 
-                                Text="{Binding Title}" 
-                                ImageSource="{Binding Icon}"
-                                TextColor="Black"/>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Grid Padding="10">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="25"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label Grid.Row="0" Grid.Column="0" Text="{Binding Icon}" Style="{StaticResource lblFontAwesome_S}" HorizontalOptions="Center" FontSize="Medium" VerticalOptions="CenterAndExpand" />
+                                        <Label Grid.Row="0" Grid.Column="1" Text="{Binding Title}" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand" />
+
+                                    </Grid>
+                                </StackLayout>
+                            </ViewCell>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
